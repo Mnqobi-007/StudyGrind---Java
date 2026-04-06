@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyGrind | Upgrade to Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/c427389445.js" crossorigin="anonymous"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .payment-container { background: white; padding: 50px; border-radius: 24px; text-align: center; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .payment-icon { font-size: 60px; color: #3b82f6; margin-bottom: 20px; }
+        h2 { color: #1e293b; margin-bottom: 10px; }
+        .price { font-size: 36px; font-weight: 800; color: #1e293b; margin: 20px 0; }
+        .price small { font-size: 14px; font-weight: 400; color: #64748b; }
+        .features { text-align: left; margin: 20px 0; padding: 0 20px; }
+        .features li { margin: 10px 0; color: #475569; }
+        .features i { color: #22c55e; margin-right: 10px; }
+        .btn { background: #3b82f6; color: white; padding: 14px 28px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 16px; margin-top: 20px; transition: all 0.3s; }
+        .btn:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-mock { background: #f59e0b; }
+        .btn-mock:hover { background: #d97706; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #e2e8f0; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 30px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .demo-badge { background: #fef3c7; color: #d97706; padding: 8px 16px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="payment-container" id="paymentContainer">
+        <div class="payment-icon"><i class="fa-solid fa-crown"></i></div>
+        <h2>Upgrade to Premium</h2>
+        <div id="demoBadge" class="demo-badge" style="display: none;"><i class="fa-solid fa-flask"></i> DEMO MODE</div>
+        <div class="price">$29.99<span><small>/month</small></span></div>
+        <ul class="features">
+            <li><i class="fa-solid fa-check-circle"></i> Unlimited access to all courses</li>
+            <li><i class="fa-solid fa-check-circle"></i> Download textbooks and materials</li>
+            <li><i class="fa-solid fa-check-circle"></i> Priority support</li>
+        </ul>
+        <div id="paymentStatus"><div class="spinner"></div><p>Initializing...</p></div>
+    </div>
+    <script>
+        const token = localStorage.getItem('accessToken');
+        async function createPayment() {
+            try {
+                const response = await fetch('/api/subscription/create-payment', {
+                    method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.mode === 'mock') {
+                    document.getElementById('demoBadge').style.display = 'inline-block';
+                    document.getElementById('paymentStatus').innerHTML = `
+                        <p style="color:#d97706; margin:20px 0;">PayFast not configured. Demo mode active.</p>
+                        <button class="btn btn-mock" onclick="activateMock()">Activate Demo Subscription</button>
+                        <button class="btn" onclick="window.location.href='/student/dashboard'" style="background:#64748b; margin-left:10px;">Cancel</button>
+                    `;
+                } else if (data.paymentUrl && data.paymentData) {
+                    const form = document.createElement('form'); form.method = 'POST'; form.action = data.paymentUrl;
+                    for (const [k, v] of Object.entries(data.paymentData)) {
+                        const input = document.createElement('input'); input.type = 'hidden'; input.name = k; input.value = v; form.appendChild(input);
+                    }
+                    document.body.appendChild(form); form.submit();
+                } else { showError('Unable to initialize payment'); }
+            } catch (error) { showError('Network error'); }
+        }
+        async function activateMock() {
+            document.getElementById('paymentStatus').innerHTML = '<div class="spinner"></div><p>Activating...</p>';
+            const response = await fetch('/api/subscription/mock-subscribe', {
+                method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('paymentStatus').innerHTML = `<p style="color:#22c55e;">✓ ${data.message}</p><button class="btn" onclick="window.location.href='/student/dashboard'">Go to Dashboard</button>`;
+            } else { showError('Activation failed'); }
+        }
+        function showError(msg) {
+            document.getElementById('paymentStatus').innerHTML = `<p style="color:#ef4444;">${msg}</p><button class="btn" onclick="window.location.href='/student/dashboard'">Return</button>`;
+        }
+        if (!token) { showError('Please log in'); setTimeout(() => window.location.href='/', 2000); }
+        else { createPayment(); }
+    </script>
+</body>
+</html>
