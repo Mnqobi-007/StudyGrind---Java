@@ -14,6 +14,9 @@ public class UserResponse {
     private String address;
     private Boolean emailVerified;
     private String verificationStatus;
+    private String studentCardPath;
+    private String studentCardFileName;
+    private Boolean isActive;
 
     public UserResponse() {}
 
@@ -29,8 +32,11 @@ public class UserResponse {
     public String getAddress() { return address; }
     public Boolean getEmailVerified() { return emailVerified; }
     public String getVerificationStatus() { return verificationStatus; }
+    public String getStudentCardPath() { return studentCardPath; }
+    public String getStudentCardFileName() { return studentCardFileName; }
+    public Boolean getIsActive() { return isActive; }
 
-    // Setters
+        // Setters
     public void setId(Long id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setEmail(String email) { this.email = email; }
@@ -42,4 +48,7 @@ public class UserResponse {
     public void setAddress(String address) { this.address = address; }
     public void setEmailVerified(Boolean emailVerified) { this.emailVerified = emailVerified; }
     public void setVerificationStatus(String verificationStatus) { this.verificationStatus = verificationStatus; }
+    public void setStudentCardPath(String studentCardPath) { this.studentCardPath = studentCardPath; }
+    public void setStudentCardFileName(String studentCardFileName) { this.studentCardFileName = studentCardFileName; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 }

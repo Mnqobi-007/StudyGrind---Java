@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.LocalDate;
 import java.util.List;
 
 public class RegisterRequest {
@@ -25,7 +24,7 @@ public class RegisterRequest {
     private String studentNumber;
     private String phoneNumber;
     private String address;
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     // Student card upload fields
     private MultipartFile studentCardFile;
@@ -42,7 +41,7 @@ public class RegisterRequest {
     public String getStudentNumber() { return studentNumber; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getAddress() { return address; }
-    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public String getDateOfBirth() { return dateOfBirth; }
     public MultipartFile getStudentCardFile() { return studentCardFile; }
     public String getStudentCardBase64() { return studentCardBase64; }
 
@@ -55,7 +54,7 @@ public class RegisterRequest {
     public void setStudentNumber(String studentNumber) { this.studentNumber = studentNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setAddress(String address) { this.address = address; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public void setStudentCardFile(MultipartFile studentCardFile) { this.studentCardFile = studentCardFile; }
     public void setStudentCardBase64(String studentCardBase64) { this.studentCardBase64 = studentCardBase64; }
 }

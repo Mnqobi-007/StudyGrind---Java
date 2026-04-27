@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -108,9 +108,17 @@ public class UserService {
         user.setStudentNumber(request.getStudentNumber());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
-        if (request.getDateOfBirth() != null) {
-            user.setDateOfBirth(request.getDateOfBirth().atStartOfDay());
+
+        // Parse date from String to LocalDateTime
+        if (request.getDateOfBirth() != null && !request.getDateOfBirth().isEmpty()) {
+            try {
+                LocalDate birthDate = LocalDate.parse(request.getDateOfBirth());
+                user.setDateOfBirth(birthDate.atStartOfDay());
+            } catch (Exception e) {
+                System.out.println("Error parsing date: " + request.getDateOfBirth());
+            }
         }
+
         user.setEmailVerified(false);
         user.setVerificationStatus("pending");
         user.setIsActive(false); // Inactive until verified
@@ -143,10 +151,8 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        // Notify admins (in production, this would send real notifications)
         System.out.println("📋 New student registration pending verification: " + savedUser.getFullName() + " (" + savedUser.getEmail() + ")");
 
-        // Send email to user
         emailService.sendRegistrationPendingEmail(user.getEmail(), user.getFullName());
 
         return savedUser;
@@ -172,6 +178,26 @@ public class UserService {
         file.transferTo(filePath.toFile());
 
         return studentCardUploadDir + "/" + filename;
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponse> getPendingVerificationStudents() {
+        List<User> students = userRepository.findByRoleAndVerificationStatus("student", "pending");
+        List<UserResponse> responses = new ArrayList<>();
+        for (User student : students) {
+            UserResponse response = new UserResponse();
+            response.setId(student.getId());
+            response.setFullName(student.getFullName());
+            response.setEmail(student.getEmail());
+            response.setStudentNumber(student.getStudentNumber());
+            response.setCreatedAt(student.getCreatedAt());
+            response.setVerificationStatus(student.getVerificationStatus());
+            response.setStudentCardPath(student.getStudentCardPath());
+            response.setStudentCardFileName(student.getStudentCardFileName());
+            response.setIsActive(student.getIsActive());
+            responses.add(response);
+        }
+        return responses;
     }
 
     @Transactional
@@ -206,11 +232,6 @@ public class UserService {
         }
 
         return userRepository.save(student);
-    }
-
-    @Transactional(readOnly = true)
-    public List<User> getPendingVerificationStudents() {
-        return userRepository.findByRoleAndVerificationStatus("student", "pending");
     }
 
     @Transactional(readOnly = true)
@@ -501,6 +522,9 @@ public class UserService {
         response.setAddress(user.getAddress());
         response.setEmailVerified(user.getEmailVerified());
         response.setVerificationStatus(user.getVerificationStatus());
+        response.setStudentCardPath(user.getStudentCardPath());
+        response.setStudentCardFileName(user.getStudentCardFileName());
+        response.setIsActive(user.getIsActive());
         return response;
     }
 }

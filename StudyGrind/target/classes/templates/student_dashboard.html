@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyGrind | Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #000000;
+            --blue: #3b82f6;
+            --yellow: #facc15;
+            --white: #ffffff;
+            --bg: #f8fafc;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--black); }
+        .dashboard-container { display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 280px; background: var(--black); color: var(--white); display: flex; flex-direction: column; padding: 30px 20px; position: fixed; height: 100vh; left: 0; top: 0; z-index: 10; }
+        .logo { font-weight: 800; font-size: 24px; margin-bottom: 50px; }
+        .logo-box { background: var(--yellow); color: var(--black); padding: 4px 10px; border-radius: 8px; margin-right: 5px; }
+        .dot { color: var(--yellow); }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav li { padding: 14px 18px; border-radius: 12px; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; color: #94a3b8; font-weight: 600; transition: all 0.3s ease; }
+        .sidebar-nav li:hover { background: #1e293b; color: white; padding-left: 25px; }
+        .sidebar-nav li.active { background: var(--blue); color: white; }
+        .sidebar-nav li.active i { color: var(--yellow); }
+        .user-card { margin-top: auto; display: flex; align-items: center; gap: 12px; padding-top: 20px; border-top: 1px solid #333; }
+        .user-card img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--yellow); object-fit: cover; }
+        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--black); }
+        .main-content { flex-grow: 1; margin-left: 280px; overflow-y: auto; padding: 40px; background: var(--bg); min-height: 100vh; }
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .btn-yellow-sm { background: var(--yellow); border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-yellow-sm:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(250,204,21,0.3); }
+        .btn-blue-sm { background: var(--blue); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-blue-sm:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-red-sm { background: var(--danger); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-red-sm:hover { background: #dc2626; transform: translateY(-2px); }
+        .btn-green-sm { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-green-sm:hover { background: #16a34a; transform: translateY(-2px); }
+        .content-section { display: none; animation: slideUp 0.4s ease; }
+        .content-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .welcome-banner { background: linear-gradient(135deg, var(--blue) 0%, #1e40af 100%); padding: 40px; border-radius: 24px; color: white; margin-bottom: 30px; }
+        .txt-yellow { color: var(--yellow); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s; cursor: pointer; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .stat-card i { font-size: 32px; margin-bottom: 10px; }
+        .stat-card h3 { font-size: 32px; font-weight: 800; }
+        .stat-card p { color: var(--text-gray); font-size: 14px; font-weight: 600; }
+        .content-card { background: white; border-radius: 24px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .content-card h3 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 20px; }
+        .content-card h3 i { color: var(--blue); }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .action-btn { background: var(--bg); border: 2px solid var(--border); padding: 15px; border-radius: 16px; cursor: pointer; text-align: center; transition: all 0.2s; }
+        .action-btn:hover { border-color: var(--blue); background: #eff6ff; transform: translateY(-2px); }
+        .action-btn i { font-size: 24px; color: var(--blue); margin-bottom: 8px; }
+        .action-btn span { display: block; font-size: 14px; font-weight: 600; }
+        .course-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); transition: all 0.3s; cursor: pointer; }
+        .course-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-color: var(--blue); }
+        .course-card h4 { margin-bottom: 8px; font-size: 18px; font-weight: 800; }
+        .course-card p { color: var(--text-gray); margin-bottom: 10px; }
+        .courses-grid { display: flex; flex-direction: column; gap: 15px; }
+        .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .resource-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); transition: all 0.3s; cursor: pointer; }
+        .resource-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-color: var(--blue); }
+        .resource-card h4 { margin-bottom: 8px; font-size: 18px; font-weight: 800; }
+        .resource-card p { color: var(--text-gray); margin-bottom: 10px; }
+        .note-card { background: white; border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s; border: 1px solid var(--border); }
+        .note-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-color: var(--blue); }
+        .note-card h4 { margin-bottom: 8px; font-size: 18px; font-weight: 800; }
+        .note-color { height: 4px; width: 50px; border-radius: 2px; margin-bottom: 15px; }
+        .course-info-panel { background: var(--bg); padding: 20px; border-radius: 16px; margin-bottom: 25px; }
+        .course-info-panel p { margin: 8px 0; }
+        .announcement-card { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 20px; margin-bottom: 15px; border-left: 4px solid var(--yellow); }
+        .announcement-card h4 { color: #92400e; margin-bottom: 10px; }
+        .announcement-card p { color: #78350f; }
+        .announcement-card small { color: #b45309; }
+        .quiz-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .quiz-card:hover { border-color: var(--blue); }
+        .quiz-question { margin-bottom: 25px; padding: 15px; background: var(--bg); border-radius: 12px; }
+        .quiz-option { display: flex; align-items: center; gap: 10px; padding: 10px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { background: #eff6ff; }
+        .quiz-option input { cursor: pointer; }
+        .quiz-timer { background: var(--black); color: white; padding: 10px 20px; border-radius: 30px; display: inline-block; margin-bottom: 20px; }
+        .quiz-result { text-align: center; padding: 30px; background: linear-gradient(135deg, var(--success) 0%, #059669 100%); border-radius: 16px; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal.active { display: flex !important; }
+        .modal-content { background: white; padding: 30px; border-radius: 24px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; animation: modalSlideIn 0.3s ease; }
+        @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 24px; font-weight: 800; }
+        .close-modal { cursor: pointer; font-size: 28px; color: var(--text-gray); transition: color 0.2s; }
+        .close-modal:hover { color: var(--black); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px; font-family: inherit; }
+        .btn-submit { width: 100%; padding: 14px; background: var(--black); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
+        .btn-submit:hover { background: var(--blue); }
+        .profile-completion-banner { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
+        .profile-completion-banner p { color: #92400e; font-weight: 500; }
+        .notification-dropdown { position: relative; display: inline-block; }
+        .notification-btn { background: var(--yellow); border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; position: relative; }
+        .notification-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; display: none; }
+        .notification-dropdown-content { display: none; position: absolute; right: 0; top: 100%; width: 350px; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 100; max-height: 400px; overflow-y: auto; }
+        .notification-item { padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .notification-item.unread { background: #eff6ff; }
+        .notification-item:hover { background: var(--bg); }
+        .notification-message { font-size: 13px; }
+        .notification-time { font-size: 10px; color: var(--text-gray); margin-top: 5px; }
+        .notification-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: 700; }
+        .notification-footer { padding: 10px; text-align: center; border-top: 1px solid var(--border); }
+        .whatsapp-card { background: #25D366; color: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; transition: all 0.3s; }
+        .whatsapp-card:hover { transform: translateY(-3px); }
+        .whatsapp-card i { font-size: 32px; margin-bottom: 10px; }
+        .whatsapp-card h4 { margin-bottom: 5px; }
+        .whatsapp-card p { font-size: 12px; opacity: 0.9; margin-bottom: 15px; }
+        .timetable-container { overflow-x: auto; }
+        .timetable-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+        .timetable-table th { background: var(--black); color: white; padding: 12px; text-align: left; font-weight: 700; }
+        .timetable-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .timetable-entry { background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+        .timetable-entry.teacher-entry { background: #eff6ff; border-left: 3px solid var(--blue); }
+        .timetable-entry strong { display: block; margin-bottom: 4px; }
+        .timetable-entry small { display: block; color: var(--text-gray); font-size: 11px; margin-top: 4px; }
+        .entry-actions { margin-top: 8px; display: flex; gap: 8px; }
+        .edit-entry, .delete-entry { background: none; border: none; cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; }
+        .edit-entry { color: var(--blue); }
+        .edit-entry:hover { background: #dbeafe; }
+        .delete-entry { color: var(--danger); }
+        .delete-entry:hover { background: #fee2e2; }
+        .empty-timetable { text-align: center; padding: 40px; color: var(--text-gray); }
+        .day-filter { margin-right: 10px; margin-bottom: 10px; }
+        .day-filter.active { background: var(--blue); color: white; }
+        .loading-spinner { text-align: center; padding: 40px; color: var(--text-gray); }
+        .loading-spinner::before { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .access-denied { text-align: center; padding: 60px 20px; background: white; border-radius: 16px; }
+        .access-denied i { font-size: 64px; color: var(--danger); margin-bottom: 20px; }
+        .access-denied h2 { margin-bottom: 10px; }
+        .access-denied p { color: var(--text-gray); margin-bottom: 20px; }
+        @media (max-width: 1024px) {
+            .sidebar { width: 80px; padding: 30px 10px; }
+            .sidebar .logo, .sidebar .user-card .u-info, .sidebar-nav li span { display: none; }
+            .sidebar-nav li { justify-content: center; }
+            .main-content { margin-left: 80px; padding: 20px; }
+            .two-column { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="sidebar-header"><div class="logo"><span class="logo-box">S</span> StudyGrind<span class="dot">.</span></div></div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active" data-section="overview"><i class="fa-solid fa-house"></i><span> Overview</span></li>
+                <li data-section="my-courses"><i class="fa-solid fa-graduation-cap"></i><span> My Courses</span></li>
+                <li data-section="available-courses"><i class="fa-solid fa-plus-circle"></i><span> Browse Courses</span></li>
+                <li data-section="announcements"><i class="fa-solid fa-bullhorn"></i><span> Announcements</span></li>
+                <li data-section="timetable"><i class="fa-solid fa-calendar-alt"></i><span> Timetable</span></li>
+                <li data-section="assignments"><i class="fa-solid fa-file-arrow-up"></i><span> Assignments</span></li>
+                <li data-section="quizzes"><i class="fa-solid fa-question-circle"></i><span> Quizzes</span></li>
+                <li data-section="notes"><i class="fa-solid fa-pen-nib"></i><span> Study Notes (Text)</span></li>
+                <li data-section="textbooks"><i class="fa-solid fa-book"></i><span> Textbooks (Files)</span></li>
+                <li data-section="billing"><i class="fa-solid fa-credit-card"></i><span> Billing</span></li>
+            </ul>
+        </nav>
+        <div class="user-card">
+            <img id="userAvatar" src="https://ui-avatars.com/api/?name=Student&background=facc15&color=000" alt="Student">
+            <div class="u-info"><p class="u-name" id="userName">Student Name</p><p class="u-status"><span class="role-badge student">Student</span></p></div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button class="btn-blue-sm" onclick="openProfileEditModal()"><i class="fa-solid fa-user-edit"></i> Edit Profile</button>
+            <div class="notification-dropdown">
+                <button class="notification-btn" onclick="toggleNotifications()"><i class="fa-solid fa-bell"></i><span id="notificationBadge" class="notification-badge">0</span></button>
+                <div id="notificationDropdown" class="notification-dropdown-content"><div class="notification-header">Notifications</div><div id="notificationList"></div><div class="notification-footer"><button class="btn-yellow-sm" onclick="clearNotifications()" style="font-size: 12px; padding: 5px 10px;">Clear All</button></div></div>
+            </div>
+            <button class="btn-yellow-sm" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+        </header>
+
+        <div class="whatsapp-card"><i class="fa-brands fa-whatsapp"></i><h4>Join Course Discussion</h4><p>Connect with fellow students and teachers on WhatsApp</p><button class="btn-yellow-sm" onclick="requestWhatsAppAccess()" style="background: white; color: #25D366;"><i class="fa-brands fa-whatsapp"></i> Request Access</button></div>
+        <div id="profileBanner" class="profile-completion-banner" style="display: none;"><p><i class="fa-solid fa-circle-exclamation"></i> Your profile is incomplete. Please complete your profile to access all features.</p><button class="btn-yellow-sm" onclick="openProfileCompletionModal()">Complete Profile</button></div>
+
+        <!-- Overview Section -->
+        <section id="overview" class="content-section active">
+            <div class="welcome-banner"><h1>Ready to <span class="txt-yellow">Grind</span>, <span id="welcomeName">Student</span>! 👋</h1><p id="studentStats">Loading your stats...</p></div>
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showSection('assignments')"><i class="fa-solid fa-tasks"></i><h3 id="pendingCount">0</h3><p>Pending Assignments</p></div>
+                <div class="stat-card" onclick="showSection('quizzes')"><i class="fa-solid fa-chart-line"></i><h3 id="avgScore">0%</h3><p>Average Quiz Score</p></div>
+                <div class="stat-card" onclick="showSection('quizzes')"><i class="fa-solid fa-check-circle"></i><h3 id="quizCount">0</h3><p>Quizzes Completed</p></div>
+                <div class="stat-card" onclick="showSection('billing')"><i class="fa-solid fa-credit-card"></i><h3 id="outstandingBalance">$0</h3><p>Outstanding Balance</p></div>
+            </div>
+            <div class="two-column">
+                <div class="content-card"><h3><i class="fa-solid fa-clock"></i> Quick Actions</h3><div class="quick-actions"><div class="action-btn" onclick="showSection('available-courses')"><i class="fa-solid fa-plus-circle"></i><span>Browse Courses</span></div><div class="action-btn" onclick="showSection('my-courses')"><i class="fa-solid fa-graduation-cap"></i><span>My Courses</span></div><div class="action-btn" onclick="showSection('announcements')"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></div><div class="action-btn" onclick="showSection('billing')"><i class="fa-solid fa-credit-card"></i><span>Billing</span></div></div></div>
+                <div class="content-card"><h3><i class="fa-solid fa-bell"></i> Subscription Info</h3><div id="subscriptionInfo">Loading...</div></div>
+            </div>
+        </section>
+
+        <!-- My Courses Section -->
+        <section id="my-courses" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-graduation-cap"></i> My Enrolled Courses</h3><div id="myCoursesList" class="courses-grid"><div class="loading-spinner">Loading your courses...</div></div></div></section>
+        <section id="available-courses" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-plus-circle"></i> Available Courses</h3><div id="availableCoursesList" class="courses-grid"><div class="loading-spinner">Loading available courses...</div></div></div></section>
+        <section id="announcements" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-bullhorn"></i> Course Announcements</h3><div id="announcementsList"></div></div></section>
+        <section id="timetable" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-calendar-alt"></i> My Schedule</h3><div style="margin-bottom: 15px;"><button class="btn-blue-sm" onclick="openTimetableModal()" style="margin-right: 10px;"><i class="fa-solid fa-plus"></i> Add Entry</button><div><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('all')">All</button><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('Monday')">Mon</button><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('Tuesday')">Tue</button><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('Wednesday')">Wed</button><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('Thursday')">Thu</button><button class="btn-yellow-sm day-filter" onclick="filterTimetableByDay('Friday')">Fri</button></div></div><div id="timetableContainer"></div></div></section>
+        <section id="assignments" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-file-arrow-up"></i> My Assignments</h3><div id="assignmentsList"></div></div></section>
+        <section id="quizzes" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-question-circle"></i> Available Quizzes</h3><div id="quizzesList"></div></div><div class="content-card"><h3><i class="fa-solid fa-chart-simple"></i> Quiz Results</h3><div id="quizResultsList"></div></div></section>
+        <section id="notes" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-pen-nib"></i> Study Notes (Text Resources)</h3><div id="notesGrid" class="notes-grid">Loading notes...</div></div></section>
+        <section id="textbooks" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-book"></i> Textbooks & File Resources</h3><div id="textbooksGrid" class="notes-grid">Loading textbooks...</div></div></section>
+        <section id="billing" class="content-section"><div class="content-card"><h3><i class="fa-solid fa-credit-card"></i> Billing Summary</h3><div id="billingSummary"></div></div><div class="content-card"><h3><i class="fa-solid fa-receipt"></i> Course Payments</h3><div id="coursePaymentsList"></div></div></section>
+    </main>
+</div>
+
+<!-- Course Content Section (Dynamic) -->
+<div id="course-content" class="content-section" style="margin-left: 280px; padding: 40px;">
+    <div class="content-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3><i class="fa-solid fa-book"></i> Course Materials</h3>
+            <button class="btn-yellow-sm" onclick="showSection('my-courses')">← Back to Courses</button>
+        </div>
+        <div id="courseContentDisplay"></div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="profileModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fa-solid fa-user-check"></i> Complete Your Profile</h3><span class="close-modal" onclick="closeProfileModal()">&times;</span></div><div id="profileCompletionContent"></div></div></div>
+<div id="profileEditModal" class="modal"><div class="modal-content"><div class="modal-header"><h3><i class="fa-solid fa-user-edit"></i> Edit Profile</h3><span class="close-modal" onclick="closeProfileEditModal()">&times;</span></div><form id="profileEditForm"><div class="form-group"><label>Full Name</label><input type="text" id="editFullName"></div><div class="form-group"><label>Phone Number</label><input type="tel" id="editPhoneNumber"></div><div class="form-group"><label>Address</label><textarea id="editAddress" rows="2"></textarea></div><div id="studentNumberField" class="form-group"><label>Student Number</label><input type="text" id="editStudentNumber"></div><button type="submit" class="btn-submit">Save Changes</button></form></div></div>
+<div id="quizModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="quizModalTitle">Take Quiz</h3><span class="close-modal" onclick="closeQuizModal()">&times;</span></div><div id="quizContent"></div></div></div>
+<div id="noteModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="noteModalTitle">Note Details</h3><span class="close-modal" onclick="closeNoteModal()">&times;</span></div><div id="noteDetailsContent"></div></div></div>
+<div id="timetableModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="modalTitle">Timetable Entry</h3><span class="close-modal" onclick="closeTimetableModal()">&times;</span></div><form id="timetableForm"><input type="hidden" id="entryId"><div class="form-group"><label>Day of Week *</label><select id="dayOfWeek" required><option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option></select></div><div class="form-group"><label>Start Time *</label><input type="time" id="startTime" required></div><div class="form-group"><label>End Time *</label><input type="time" id="endTime" required></div><div class="form-group"><label>Subject *</label><input type="text" id="subject" required></div><div class="form-group"><label>Location</label><input type="text" id="location"></div><div class="form-group"><label>Notes</label><textarea id="notes" rows="2"></textarea></div><button type="submit" class="btn-submit">Save Entry</button></form></div></div>
+
+<script>
+    const API_BASE_URL = '/api';
+    let currentCourseId = null;
+    let currentTimetableEntries = [];
+    let currentFilterDay = 'all';
+
+    function getToken() { return localStorage.getItem('accessToken'); }
+    function getAuthHeaders() { return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` }; }
+
+    function showNotification(message, type) {
+        let container = document.getElementById('notification-container');
+        if (!container) { container = document.createElement('div'); container.id = 'notification-container'; container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 10000;'; document.body.appendChild(container); }
+        const colors = { success: '#22c55e', error: '#ef4444', info: '#3b82f6', warning: '#f59e0b' };
+        const notification = document.createElement('div');
+        notification.style.cssText = `background: ${colors[type] || colors.info}; color: white; padding: 12px 20px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; font-weight: 500;`;
+        notification.textContent = message;
+        container.appendChild(notification);
+        setTimeout(() => notification.remove(), 4000);
+        notification.onclick = () => notification.remove();
+    }
+
+    function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    function formatDate(dateString) { if (!dateString) return 'N/A'; try { return new Date(dateString).toLocaleDateString(); } catch(e) { return dateString; } }
+    function formatDateTime(dateString) { if (!dateString) return 'N/A'; try { return new Date(dateString).toLocaleString(); } catch(e) { return dateString; } }
+    function getRandomColor(subject) { const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']; if (!subject) return colors[0]; let hash = 0; for (let i = 0; i < subject.length; i++) { hash = subject.charCodeAt(i) + ((hash << 5) - hash); } return colors[Math.abs(hash) % colors.length]; }
+
+    function showSection(sectionId) {
+        const target = document.getElementById(sectionId);
+        if (!target) {
+            console.warn(`Section "${sectionId}" not found`);
+            return;
+        }
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        target.classList.add('active');
+        document.querySelectorAll('.sidebar-nav li').forEach(l => l.classList.remove('active'));
+        const activeNav = document.querySelector(`.sidebar-nav li[data-section="${sectionId}"]`);
+        if (activeNav) activeNav.classList.add('active');
+        localStorage.setItem('lastSection', sectionId);
+    }
+
+    window.logout = function() { if (confirm('Are you sure you want to logout?')) { localStorage.clear(); window.location.href = '/'; } };
+
+    // ==================== PROFILE COMPLETION ====================
+    async function checkProfileCompletion() {
+        try {
+            const response = await fetch(API_BASE_URL + '/profile', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            if (!response.ok) return;
+            const profile = await response.json();
+            const isFullNameFilled = profile.fullName && profile.fullName.trim() !== '';
+            const isPhoneFilled = profile.phoneNumber && profile.phoneNumber.trim() !== '';
+            const isAddressFilled = profile.address && profile.address.trim() !== '';
+            const isStudentNumberFilled = profile.role === 'student' ? (profile.studentNumber && profile.studentNumber.trim() !== '') : true;
+            const isProfileCompleted = isFullNameFilled && isPhoneFilled && isAddressFilled && isStudentNumberFilled;
+            document.getElementById('profileBanner').style.display = !isProfileCompleted ? 'flex' : 'none';
+        } catch (error) { console.error('Error checking profile completion:', error); }
+    }
+    async function openProfileCompletionModal() {
+        try {
+            const response = await fetch(API_BASE_URL + '/profile', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const profile = await response.json();
+            let formHtml = `<p style="margin-bottom: 20px;">Please complete your profile information below.</p><form id="profileCompletionForm">`;
+            if (!profile.fullName || profile.fullName.trim() === '') formHtml += `<div class="form-group"><label>Full Name *</label><input type="text" id="completionFullName" value="${escapeHtml(profile.fullName || '')}" placeholder="Enter your full name" required></div>`;
+            if (!profile.phoneNumber || profile.phoneNumber.trim() === '') formHtml += `<div class="form-group"><label>Phone Number *</label><input type="tel" id="completionPhoneNumber" value="${escapeHtml(profile.phoneNumber || '')}" placeholder="+27 123 456 789" required></div>`;
+            if (!profile.address || profile.address.trim() === '') formHtml += `<div class="form-group"><label>Address *</label><textarea id="completionAddress" rows="2" placeholder="Your address" required>${escapeHtml(profile.address || '')}</textarea></div>`;
+            if (profile.role === 'student' && (!profile.studentNumber || profile.studentNumber.trim() === '')) formHtml += `<div class="form-group"><label>Student Number *</label><input type="text" id="completionStudentNumber" value="${escapeHtml(profile.studentNumber || '')}" placeholder="e.g., STU2024001" required></div>`;
+            formHtml += `<button type="submit" class="btn-submit">Save Profile</button></form>`;
+            document.getElementById('profileCompletionContent').innerHTML = formHtml;
+            document.getElementById('profileModal').style.display = 'flex';
+            document.getElementById('profileCompletionForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const profileData = {};
+                const fullName = document.getElementById('completionFullName')?.value; if (fullName) profileData.fullName = fullName;
+                const phoneNumber = document.getElementById('completionPhoneNumber')?.value; if (phoneNumber) profileData.phoneNumber = phoneNumber;
+                const address = document.getElementById('completionAddress')?.value; if (address) profileData.address = address;
+                const studentNumber = document.getElementById('completionStudentNumber')?.value; if (studentNumber) profileData.studentNumber = studentNumber;
+                const submitBtn = e.target.querySelector('button[type="submit"]'); const originalText = submitBtn.innerHTML; submitBtn.innerHTML = '<span class="loading-spinner"></span> Saving...'; submitBtn.disabled = true;
+                try {
+                    const updateResponse = await fetch(API_BASE_URL + '/profile', { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify(profileData) });
+                    const data = await updateResponse.json();
+                    if (data.success) { showNotification('Profile completed successfully!', 'success'); closeProfileModal(); document.getElementById('profileBanner').style.display = 'none'; await loadUserInfo(); await loadMyCourses(); await loadAvailableCourses(); }
+                    else showNotification(data.error || 'Failed to save profile', 'error');
+                } catch (error) { showNotification('Network error. Please try again.', 'error'); }
+                finally { submitBtn.innerHTML = originalText; submitBtn.disabled = false; }
+            };
+        } catch (error) { showNotification('Error loading profile', 'error'); }
+    }
+    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+
+    // ==================== PROFILE EDIT ====================
+    async function openProfileEditModal() {
+        try {
+            const response = await fetch(API_BASE_URL + '/profile', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const profile = await response.json();
+            document.getElementById('editFullName').value = profile.fullName || '';
+            document.getElementById('editPhoneNumber').value = profile.phoneNumber || '';
+            document.getElementById('editAddress').value = profile.address || '';
+            document.getElementById('editStudentNumber').value = profile.studentNumber || '';
+            document.getElementById('profileEditModal').style.display = 'flex';
+        } catch (error) { showNotification('Error loading profile', 'error'); }
+    }
+    function closeProfileEditModal() { document.getElementById('profileEditModal').style.display = 'none'; }
+    document.getElementById('profileEditForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(API_BASE_URL + '/profile', { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify({ fullName: document.getElementById('editFullName').value, phoneNumber: document.getElementById('editPhoneNumber').value, address: document.getElementById('editAddress').value, studentNumber: document.getElementById('editStudentNumber').value }) });
+            const data = await response.json();
+            if (data.success) { showNotification('Profile updated successfully!', 'success'); closeProfileEditModal(); await loadUserInfo(); await checkProfileCompletion(); await loadMyCourses(); await loadAvailableCourses(); }
+            else showNotification(data.error || 'Failed to update profile', 'error');
+        } catch (error) { showNotification('Error updating profile', 'error'); }
+    });
+
+    // ==================== TIMETABLE ====================
+    function openTimetableModal(entry = null) {
+        if (entry) { document.getElementById('modalTitle').textContent = 'Edit Timetable Entry'; document.getElementById('entryId').value = entry.id; document.getElementById('dayOfWeek').value = entry.dayOfWeek; document.getElementById('startTime').value = entry.startTime; document.getElementById('endTime').value = entry.endTime; document.getElementById('subject').value = entry.subject; document.getElementById('location').value = entry.location || ''; document.getElementById('notes').value = entry.notes || ''; }
+        else { document.getElementById('modalTitle').textContent = 'Create Timetable Entry'; document.getElementById('entryId').value = ''; document.getElementById('timetableForm').reset(); }
+        document.getElementById('timetableModal').style.display = 'flex';
+    }
+    function closeTimetableModal() { document.getElementById('timetableModal').style.display = 'none'; }
+    async function loadTimetable() {
+        try { const response = await fetch(API_BASE_URL + '/timetable', { headers: { 'Authorization': 'Bearer ' + getToken() } }); currentTimetableEntries = await response.json(); renderTimetable(); } catch(e) { console.error('Error loading timetable:', e); }
+    }
+    function renderTimetable() {
+        const container = document.getElementById('timetableContainer'); if (!container) return;
+        const filteredEntries = currentFilterDay === 'all' ? currentTimetableEntries : currentTimetableEntries.filter(e => e.dayOfWeek === currentFilterDay);
+        if (filteredEntries.length === 0) { container.innerHTML = '<div class="empty-timetable">📅 No timetable entries. Click "Add Entry" to create your schedule!</div>'; return; }
+        const studentEntries = filteredEntries.filter(e => e.teacherRole !== 'teacher'), teacherEntries = filteredEntries.filter(e => e.teacherRole === 'teacher');
+        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let html = '<div class="timetable-container">';
+        if (studentEntries.length > 0) {
+            html += '<h4 style="margin: 20px 0 10px 0;"><i class="fa-solid fa-user-graduate"></i> My Schedule</h4><table class="timetable-table"><thead><tr><th>Day</th><th>Schedule</th><th>Actions</th></table></thead><tbody>';
+            const grouped = {}; studentEntries.forEach(e => { if (!grouped[e.dayOfWeek]) grouped[e.dayOfWeek] = []; grouped[e.dayOfWeek].push(e); });
+            dayOrder.forEach(day => { if (grouped[day]) { const entries = grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime)); html += `<tr><td style="width: 120px; font-weight: 700;">${day}${day}</td><td style="width: 60%;">`; entries.forEach(entry => { html += `<div class="timetable-entry"><strong>${escapeHtml(entry.subject)}</strong><small>${entry.startTime} - ${entry.endTime}</small>${entry.location ? `<div><i class="fa-solid fa-location-dot"></i> ${escapeHtml(entry.location)}</div>` : ''}${entry.notes ? `<div><small>${escapeHtml(entry.notes)}</small></div>` : ''}</div>`; }); html += `</td><td style="width: 100px;"><button class="edit-entry" onclick="editTimetableEntry(${entries[0].id})">Edit</button><button class="delete-entry" onclick="deleteTimetableEntry(${entries[0].id})">Delete</button></td></tr>`; } });
+            html += '</tbody></table>';
+        }
+        if (teacherEntries.length > 0) {
+            html += '<h4 style="margin: 20px 0 10px 0;"><i class="fa-solid fa-chalkboard-user"></i> Teacher Schedule</h4><table class="timetable-table"><thead><tr><th>Day</th><th>Schedule</th><th>Teacher</th><tr></thead><tbody>';
+            const grouped = {}; teacherEntries.forEach(e => { if (!grouped[e.dayOfWeek]) grouped[e.dayOfWeek] = []; grouped[e.dayOfWeek].push(e); });
+            dayOrder.forEach(day => { if (grouped[day]) { const entries = grouped[day].sort((a, b) => a.startTime.localeCompare(b.startTime)); html += `<tr><td style="width: 100px; font-weight: 700;">${day}${day}</td><td style="width: 60%;">`; entries.forEach(entry => { html += `<div class="timetable-entry teacher-entry"><strong>${escapeHtml(entry.subject)}</strong><small>${entry.startTime} - ${entry.endTime}</small>${entry.location ? `<div><i class="fa-solid fa-location-dot"></i> ${escapeHtml(entry.location)}</div>` : ''}</div>`; }); html += `<tr><td style="width: 150px;"><i class="fa-solid fa-user"></i> ${escapeHtml(entries[0].teacherName || 'Teacher')}</td></tr>`; } });
+            html += '</tbody></table>';
+        }
+        html += '</div>'; container.innerHTML = html;
+    }
+    function filterTimetableByDay(day) { currentFilterDay = day; renderTimetable(); }
+    async function editTimetableEntry(entryId) { const entry = currentTimetableEntries.find(e => e.id === entryId); if (entry) openTimetableModal(entry); }
+    async function deleteTimetableEntry(entryId) {
+        if (!confirm('Delete this timetable entry?')) return;
+        try { const response = await fetch(API_BASE_URL + `/timetable/${entryId}`, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + getToken() } }); const data = await response.json(); if (data.success) { showNotification('Entry deleted', 'success'); loadTimetable(); } } catch(e) { showNotification('Error deleting entry', 'error'); }
+    }
+    document.getElementById('timetableForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault(); const entryId = document.getElementById('entryId').value; const data = { dayOfWeek: document.getElementById('dayOfWeek').value, startTime: document.getElementById('startTime').value, endTime: document.getElementById('endTime').value, subject: document.getElementById('subject').value, location: document.getElementById('location').value, notes: document.getElementById('notes').value };
+        const url = entryId ? API_BASE_URL + `/timetable/${entryId}` : API_BASE_URL + '/timetable'; const method = entryId ? 'PUT' : 'POST';
+        try { const response = await fetch(url, { method, headers: getAuthHeaders(), body: JSON.stringify(data) }); const result = await response.json(); if (result.success) { showNotification(entryId ? 'Entry updated' : 'Entry created', 'success'); closeTimetableModal(); loadTimetable(); } } catch(e) { showNotification('Error saving entry', 'error'); }
+    });
+
+    // ==================== NOTIFICATIONS ====================
+    async function loadNotifications() {
+        try {
+            const response = await fetch('/api/notifications', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const notifications = await response.json();
+            const badge = document.getElementById('notificationBadge');
+            const unreadCount = notifications.filter(n => !n.read).length;
+            badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            const listContainer = document.getElementById('notificationList');
+            if (notifications.length === 0) listContainer.innerHTML = '<div style="padding: 20px; text-align: center;">No notifications</div>';
+            else listContainer.innerHTML = notifications.map((n, i) => `<div class="notification-item ${!n.read ? 'unread' : ''}" onclick="markNotificationRead(${i})"><div class="notification-message">${escapeHtml(n.message)}</div><div class="notification-time">${new Date(n.timestamp).toLocaleString()}</div></div>`).join('');
+        } catch(e) { console.error('Error loading notifications:', e); }
+    }
+    function toggleNotifications() { const dropdown = document.getElementById('notificationDropdown'); dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none'; if (dropdown.style.display === 'block') loadNotifications(); }
+    async function markNotificationRead(index) { const token = getToken(); await fetch(`/api/notifications/mark-read/${index}`, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } }); loadNotifications(); }
+    async function clearNotifications() { const token = getToken(); await fetch('/api/notifications/clear', { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } }); loadNotifications(); document.getElementById('notificationBadge').style.display = 'none'; }
+    document.addEventListener('click', function(event) { const dropdown = document.getElementById('notificationDropdown'); if (!event.target.closest('.notification-dropdown') && dropdown) dropdown.style.display = 'none'; });
+    setInterval(loadNotifications, 30000);
+
+    // ==================== WHATSAPP ====================
+    async function requestWhatsAppAccess() {
+        try { const response = await fetch('/api/whatsapp/request-access', { method: 'POST', headers: { 'Authorization': 'Bearer ' + getToken() } }); const data = await response.json(); if (data.link) { window.open(data.link, '_blank'); showNotification('WhatsApp group opened!', 'success'); } else { showNotification('Access request submitted. You will receive the link once approved.', 'info'); } } catch(e) { showNotification('Error requesting access', 'error'); }
+    }
+
+    // ==================== SUBSCRIPTION STATUS - UPDATED ====================
+    async function loadSubscriptionStatus() {
+        try {
+            const response = await fetch(API_BASE_URL + '/subscription/status', {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+            const status = await response.json();
+            const subInfo = document.getElementById('subscriptionInfo');
+
+            if (status.hasActiveTrial) {
+                let warningClass = status.trialRemainingDays <= 3 ? 'warning' : '';
+                let warningText = status.trialRemainingDays <= 3 ? '⚠️ Your trial is ending soon!' : '';
+                subInfo.innerHTML = `
+                    <div style="background:#fef3c7; padding:15px; border-radius:12px; ${status.trialRemainingDays <= 3 ? 'border-left: 4px solid #f59e0b;' : ''}">
+                        <i class="fa-solid fa-gift"></i> You're on a free trial!
+                        <strong>${status.trialRemainingDays} days remaining.</strong>
+                        ${warningText ? `<div style="margin-top: 5px; color: #f59e0b;">${warningText}</div>` : ''}
+                        <div style="margin-top:10px;">
+                            <button class="btn-yellow-sm" onclick="showSection('billing')">View Billing</button>
+                        </div>
+                    </div>
+                `;
+            } else if (status.hasActiveSubscription) {
+                subInfo.innerHTML = `
+                    <div style="background:#d1fae5; padding:15px; border-radius:12px; color:#059669;">
+                        <i class="fa-solid fa-crown"></i> Premium Active!
+                        <strong>${status.subscriptionRemainingDays} days remaining.</strong>
+                        <div style="margin-top:10px;">
+                            <button class="btn-yellow-sm" onclick="showSection('billing')">Manage Subscription</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                subInfo.innerHTML = `
+                    <div style="background:#fee2e2; padding:15px; border-radius:12px; color:#dc2626;">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <strong>Your trial has expired.</strong> Please subscribe to continue accessing course content.
+                        <div style="margin-top:10px;">
+                            <button class="btn-yellow-sm" onclick="showSection('billing')">Subscribe Now</button>
+                        </div>
+                    </div>
+                `;
+            }
+        } catch(e) {
+            console.error('Error loading subscription:', e);
+            document.getElementById('subscriptionInfo').innerHTML = '<div style="background:#fee2e2; padding:15px; border-radius:12px;">Unable to load subscription status</div>';
+        }
+    }
+
+    // ==================== COURSE FUNCTIONS - UPDATED ====================
+    async function loadMyCourses() {
+        try {
+            const response = await fetch(API_BASE_URL + '/courses/my-courses', {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+
+            if (response.status === 204) {
+                document.getElementById('myCoursesList').innerHTML = '<div class="content-card"><p>No enrolled courses. <a href="#" onclick="showSection(\'available-courses\')">Browse courses</a></p></div>';
+                return;
+            }
+
+            const courses = await response.json();
+
+            if (!courses || courses.length === 0) {
+                document.getElementById('myCoursesList').innerHTML = '<div class="content-card"><p>No enrolled courses. <a href="#" onclick="showSection(\'available-courses\')">Browse courses</a></p></div>';
+                return;
+            }
+
+            let html = '';
+            for (let course of courses) {
+                // Get access status for this course
+                let accessBadge = '';
+                let accessStatus = '';
+
+                try {
+                    const detailsResponse = await fetch(API_BASE_URL + `/courses/${course.id}/details`, {
+                        headers: { 'Authorization': 'Bearer ' + getToken() }
+                    });
+                    const details = await detailsResponse.json();
+
+                    if (details.canAccessContent) {
+                        accessBadge = '<span style="color: #22c55e;"><i class="fa-solid fa-check-circle"></i> Active</span>';
+                    } else {
+                        accessBadge = '<span style="color: #ef4444;"><i class="fa-solid fa-lock"></i> Access Expired</span>';
+                        accessStatus = 'style="opacity: 0.7;"';
+                    }
+                } catch(e) {
+                    accessBadge = '<span style="color: #f59e0b;"><i class="fa-solid fa-clock"></i> Pending</span>';
+                }
+
+                html += `
+                    <div class="course-card" onclick="viewCourseContent(${course.id})" ${accessStatus}>
+                        <h4>${escapeHtml(course.name)}</h4>
+                        <p>${escapeHtml(course.description || 'No description')}</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+                            <span><i class="fa-solid fa-user"></i> ${escapeHtml(course.teacherName)}</span>
+                            ${accessBadge}
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn-blue-sm" onclick="event.stopPropagation(); viewCourseContent(${course.id})">View Content</button>
+                            <button class="btn-red-sm" onclick="event.stopPropagation(); unenrollFromCourse(${course.id})">Unenroll</button>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('myCoursesList').innerHTML = html;
+        } catch(e) {
+            console.error('Error loading courses:', e);
+            document.getElementById('myCoursesList').innerHTML = '<div class="content-card"><p>Error loading your courses. Please refresh.</p></div>';
+        }
+    }
+
+    async function unenrollFromCourse(courseId) {
+        const reason = prompt('Reason for unenrolling (optional):', '');
+        try {
+            const response = await fetch(API_BASE_URL + `/courses/${courseId}/unenroll`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ reason: reason || 'User requested' })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showNotification('Unenrolled successfully', 'success');
+                loadMyCourses();
+                loadAvailableCourses();
+                loadBillingSummary();
+            } else {
+                showNotification(data.error || 'Failed to unenroll', 'error');
+            }
+        } catch(e) {
+            showNotification('Error unenrolling', 'error');
+        }
+    }
+
+    async function loadAvailableCourses() {
+        try {
+            const response = await fetch(API_BASE_URL + '/courses/available', {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+
+            if (response.status === 204) {
+                document.getElementById('availableCoursesList').innerHTML = '<div class="content-card"><p>No courses available at this time.</p></div>';
+                return;
+            }
+
+            const courses = await response.json();
+
+            if (!courses || courses.length === 0) {
+                document.getElementById('availableCoursesList').innerHTML = '<div class="content-card"><p>No courses available at this time.</p></div>';
+                return;
+            }
+
+            let html = '';
+            for (let course of courses) {
+                html += `
+                    <div class="course-card">
+                        <h4>${escapeHtml(course.name)}</h4>
+                        <p>${escapeHtml(course.description || 'No description')}</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+                            <span><i class="fa-solid fa-user"></i> ${escapeHtml(course.teacherName)}</span>
+                            <span class="course-price">$${course.price || 29.99}</span>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button class="btn-green-sm" onclick="enrollInCourse(${course.id})">
+                                <i class="fa-solid fa-plus"></i> Enroll (14-day free trial)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('availableCoursesList').innerHTML = html;
+        } catch(e) {
+            console.error('Error loading available courses:', e);
+            document.getElementById('availableCoursesList').innerHTML = '<div class="content-card"><p>Error loading available courses.</p></div>';
+        }
+    }
+
+    async function enrollInCourse(courseId) {
+        if (!confirm('Enroll with 14-day free trial?')) return;
+        const btn = window.event?.currentTarget; const originalText = btn?.innerHTML;
+        if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enrolling...'; btn.disabled = true; }
+        try {
+            const response = await fetch(API_BASE_URL + `/courses/${courseId}/enroll`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+            const data = await response.json();
+            if (data.success) {
+                showNotification('Enrolled successfully! 14-day trial started.', 'success');
+                loadMyCourses();
+                loadAvailableCourses();
+                loadBillingSummary();
+                loadSubscriptionStatus();
+            } else {
+                showNotification(data.error || 'Enrollment failed', 'error');
+            }
+        } catch(e) {
+            showNotification('Error enrolling', 'error');
+        } finally {
+            if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
+        }
+    }
+
+    // ==================== ASSIGNMENT FUNCTIONS ====================
+    async function loadAssignments() {
+        try {
+            const response = await fetch(API_BASE_URL + '/assignments', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            if (!response.ok) { document.getElementById('assignmentsList').innerHTML = '<p>Unable to load assignments.</p>'; return; }
+            const assignments = await response.json();
+            const container = document.getElementById('assignmentsList');
+            if (!assignments || assignments.length === 0) { container.innerHTML = '<p>No assignments yet.</p>'; return; }
+            let html = ''; let pendingCount = 0;
+            for (let a of assignments) {
+                const isOverdue = new Date(a.dueDate) < new Date();
+                if (!a.submitted && !isOverdue) pendingCount++;
+                let gradeHtml = '';
+                if (a.submitted) {
+                    if (a.score !== null && a.score !== undefined) { const percentage = ((a.score / a.maxScore) * 100).toFixed(1); gradeHtml = `<div style="margin-top: 10px; padding: 10px; background: #d1fae5; border-radius: 8px;"><strong><i class="fa-solid fa-star"></i> Grade: ${a.score}/${a.maxScore} (${percentage}%)</strong>${a.feedback ? `<p style="margin-top: 5px;"><strong>Feedback:</strong> ${escapeHtml(a.feedback)}</p>` : ''}</div>`; }
+                    else gradeHtml = `<p style="margin-top: 10px; color: #f59e0b;"><i class="fa-solid fa-clock"></i> Submitted - Awaiting grading</p>`;
+                }
+                html += `<div style="background:white; padding:20px; border-radius:16px; margin-bottom:15px; border:1px solid var(--border); ${isOverdue && !a.submitted ? 'border-left: 4px solid #ef4444;' : ''}"><h4>${escapeHtml(a.title)}</h4><p>${escapeHtml(a.description || 'No description')}</p><p><strong>Subject:</strong> ${escapeHtml(a.subject)}</p><p><strong>Due:</strong> ${formatDateTime(a.dueDate)} | <strong>Max Score:</strong> ${a.maxScore}</p>${isOverdue && !a.submitted ? '<p style="color:#ef4444;"><i class="fa-solid fa-clock"></i> Deadline passed!</p>' : ''}${gradeHtml}${!a.submitted ? `<div style="margin-top: 15px;"><div class="form-group"><label>Your Submission</label><textarea id="submission-content-${a.id}" rows="4" placeholder="Write your submission here..."></textarea></div><div class="form-group"><label>Or Upload File</label><input type="file" id="submission-file-${a.id}" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"></div><button class="btn-yellow-sm" onclick="submitAssignment(${a.id})"><i class="fa-solid fa-paper-plane"></i> Submit Assignment</button></div>` : ''}</div>`;
+            }
+            container.innerHTML = html;
+            document.getElementById('pendingCount').textContent = pendingCount;
+        } catch(e) { console.error('Error loading assignments:', e); document.getElementById('assignmentsList').innerHTML = '<p>Error loading assignments.</p>'; }
+    }
+    async function submitAssignment(assignmentId) {
+        const content = document.getElementById(`submission-content-${assignmentId}`)?.value;
+        const file = document.getElementById(`submission-file-${assignmentId}`)?.files[0];
+        if (!content && !file) { showNotification('Please enter your submission content or upload a file', 'error'); return; }
+        const formData = new FormData(); if (content) formData.append('content', content); if (file) formData.append('file', file);
+        const btn = window.event?.currentTarget; const originalText = btn?.innerHTML;
+        if (btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...'; btn.disabled = true; }
+        try {
+            const response = await fetch(API_BASE_URL + `/assignments/${assignmentId}/submit`, { method: 'POST', headers: { 'Authorization': 'Bearer ' + getToken() }, body: formData });
+            if (response.ok) { showNotification('✓ Assignment submitted!', 'success'); loadAssignments(); loadStudentStats(); const selectedCourseId = localStorage.getItem('selectedCourseId'); if (selectedCourseId) loadCourseContent(parseInt(selectedCourseId)); }
+            else { const data = await response.json(); showNotification(data.error || 'Submission failed', 'error'); }
+        } catch(e) { showNotification('Network error. Please try again.', 'error'); } finally { if (btn) { btn.innerHTML = originalText; btn.disabled = false; } }
+    }
+
+    // ==================== QUIZ FUNCTIONS ====================
+    async function loadQuizzes() {
+        try {
+            const response = await fetch(API_BASE_URL + '/quizzes', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const quizzes = await response.json();
+            const container = document.getElementById('quizzesList');
+            if (!quizzes || quizzes.length === 0) { container.innerHTML = '<p>No quizzes available.</p>'; return; }
+            let html = ''; let completedCount = 0; let totalScore = 0;
+            for (let q of quizzes) {
+                if (q.attempted) { completedCount++; totalScore += (q.score || 0); }
+                html += `<div class="quiz-card"><h4>${escapeHtml(q.title)}</h4><p>${escapeHtml(q.description || 'No description')}</p><p><strong>Subject:</strong> ${escapeHtml(q.subject)} | <strong>Questions:</strong> ${q.questionCount} | <strong>Time Limit:</strong> ${q.timeLimit || 'No limit'} min</p>${!q.attempted ? `<button class="btn-green-sm" onclick="takeQuiz(${q.id})">Take Quiz</button>` : `<p><strong>Score:</strong> ${q.score}% <i class="fa-solid fa-check-circle" style="color:#22c55e;"></i></p>`}</div>`;
+            }
+            container.innerHTML = html;
+            document.getElementById('quizCount').textContent = completedCount;
+            document.getElementById('avgScore').textContent = completedCount > 0 ? Math.round(totalScore / completedCount) + '%' : '0%';
+            const completedQuizzes = quizzes.filter(q => q.attempted);
+            const resultsContainer = document.getElementById('quizResultsList');
+            if (completedQuizzes.length === 0) resultsContainer.innerHTML = '<p>No quiz results yet.</p>';
+            else { let resultsHtml = '<table class="timetable-table"><thead><tr><th>Quiz Title</th><th>Score</th><th>Status</th></tr></thead><tbody>'; for (let q of completedQuizzes) { resultsHtml += `<tr><td style="padding: 10px;">${escapeHtml(q.title)}</td><td style="padding: 10px;"><strong>${q.score}%</strong></td><td style="padding: 10px;"><span style="color:#22c55e;">Completed</span></td>`; } resultsHtml += '</tbody></table>'; resultsContainer.innerHTML = resultsHtml; }
+        } catch(e) { console.error('Error loading quizzes:', e); }
+    }
+    async function takeQuiz(quizId) {
+        const modal = document.getElementById('quizModal'); const contentDiv = document.getElementById('quizContent');
+        modal.style.display = 'flex'; contentDiv.innerHTML = '<div class="loading-spinner">Loading quiz...</div>';
+        try {
+            const response = await fetch(API_BASE_URL + `/quizzes/${quizId}/take`, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const quiz = await response.json();
+            document.getElementById('quizModalTitle').textContent = quiz.title;
+            let html = `<p>${escapeHtml(quiz.description || 'No description')}</p><p><strong>Time Limit:</strong> ${quiz.timeLimit || 'No limit'} minutes</p><form id="quizForm">`;
+            for (let i = 0; i < quiz.questions.length; i++) {
+                const q = quiz.questions[i];
+                html += `<div class="quiz-question"><p><strong>${i + 1}. ${escapeHtml(q.text)}</strong></p>`;
+                for (let j = 0; j < q.options.length; j++) { html += `<label class="quiz-option"><input type="radio" name="q${q.id}" value="${String.fromCharCode(65 + j)}"> ${escapeHtml(q.options[j])}</label>`; }
+                html += `</div>`;
+            }
+            html += `<button type="submit" class="btn-submit">Submit Quiz</button></form>`;
+            contentDiv.innerHTML = html;
+            document.getElementById('quizForm').onsubmit = async (e) => {
+                e.preventDefault(); const answers = {}; for (let q of quiz.questions) { const selected = document.querySelector(`input[name="q${q.id}"]:checked`); if (selected) answers[q.id] = selected.value; }
+                try { const submitResponse = await fetch(API_BASE_URL + `/quizzes/${quizId}/submit`, { method: 'POST', headers: getAuthHeaders(), body: JSON.stringify({ answers }) }); const result = await submitResponse.json(); if (result.success) { showNotification(`Quiz submitted! Score: ${result.score}%`, 'success'); closeQuizModal(); loadQuizzes(); loadStudentStats(); } else { showNotification(result.error || 'Submission failed', 'error'); } } catch(e) { showNotification('Error submitting quiz', 'error'); }
+            };
+        } catch(e) { contentDiv.innerHTML = '<p style="color: var(--danger);">Error loading quiz</p>'; }
+    }
+    function closeQuizModal() { document.getElementById('quizModal').style.display = 'none'; }
+
+    // ==================== NOTES (TEXT RESOURCES) ====================
+    async function loadNotes() {
+        try {
+            const response = await fetch(API_BASE_URL + '/notes', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            if (!response.ok) {
+                console.error('Failed to load notes:', response.status);
+                document.getElementById('notesGrid').innerHTML = '<p>Unable to load notes. Please refresh the page.</p>';
+                return;
+            }
+            const notes = await response.json();
+            const grid = document.getElementById('notesGrid');
+            if (!notes || notes.length === 0) {
+                grid.innerHTML = '<p>No study notes available for your enrolled courses yet. Check back later!</p>';
+                return;
+            }
+            let html = '';
+            for (let note of notes) {
+                html += `
+                    <div class="resource-card" onclick="viewNoteDetails(${note.id})">
+                        <div class="note-color" style="background: ${getRandomColor(note.subject)};"></div>
+                        <h4><i class="fa-solid fa-file-alt"></i> ${escapeHtml(note.title)}</h4>
+                        <p><strong>Subject:</strong> ${escapeHtml(note.subject || 'General')}</p>
+                        <p>${escapeHtml(note.content.substring(0, 100))}${note.content.length > 100 ? '...' : ''}</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                            <small><i class="fa-regular fa-user"></i> By: ${escapeHtml(note.teacher)}</small>
+                            <small><i class="fa-regular fa-clock"></i> ${formatDate(note.createdAt)}</small>
+                        </div>
+                        ${note.courseName ? `<small><i class="fa-solid fa-book"></i> Course: ${escapeHtml(note.courseName)}</small>` : ''}
+                        <div style="margin-top: 15px;">
+                            <span class="btn-blue-sm" style="padding: 8px 16px;"><i class="fa-solid fa-eye"></i> Read Full Note</span>
+                        </div>
+                    </div>
+                `;
+            }
+            grid.innerHTML = html;
+        } catch(e) { console.error('Error loading notes:', e); document.getElementById('notesGrid').innerHTML = '<p>Error loading notes. Please refresh the page.</p>'; }
+    }
+    async function viewNoteDetails(noteId) {
+        const modal = document.getElementById('noteModal'); const contentDiv = document.getElementById('noteDetailsContent');
+        modal.style.display = 'flex'; contentDiv.innerHTML = '<div class="loading-spinner">Loading note...</div>';
+        try {
+            const response = await fetch(API_BASE_URL + `/notes/${noteId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const note = await response.json();
+            document.getElementById('noteModalTitle').textContent = note.title;
+            contentDiv.innerHTML = `<div><div class="note-subject"><i class="fa-solid fa-tag"></i> ${escapeHtml(note.subject || 'General')}</div><div class="note-meta" style="margin: 10px 0; font-size: 12px; color: var(--text-gray);"><i class="fa-solid fa-user"></i> By: ${escapeHtml(note.teacher)}<br><i class="fa-regular fa-calendar"></i> Created: ${formatDateTime(note.createdAt)}${note.courseName ? `<br><i class="fa-solid fa-book"></i> Course: ${escapeHtml(note.courseName)}` : ''}</div><div class="note-content" style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(note.content).replace(/\n/g, '<br>')}</div></div>`;
+        } catch(e) { contentDiv.innerHTML = '<p style="color: var(--danger);">Error loading note</p>'; }
+    }
+    function closeNoteModal() { document.getElementById('noteModal').style.display = 'none'; }
+
+    // ==================== TEXTBOOKS (FILE RESOURCES) ====================
+    async function loadTextbooks() {
+        try {
+            const coursesResponse = await fetch(API_BASE_URL + '/courses/my-courses', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            const courses = await coursesResponse.json();
+            if (!courses || courses.length === 0) { document.getElementById('textbooksGrid').innerHTML = '<p>Enroll in a course to access textbooks.</p>'; return; }
+            let allTextbooks = [];
+            for (let course of courses) {
+                try { const textbooksResponse = await fetch(API_BASE_URL + `/textbooks/course/${course.id}`, { headers: { 'Authorization': 'Bearer ' + getToken() } }); if (textbooksResponse.ok) { const textbooks = await textbooksResponse.json(); if (textbooks && textbooks.length > 0) allTextbooks = [...allTextbooks, ...textbooks]; } } catch(e) { console.error(`Error loading textbooks for course ${course.id}:`, e); }
+            }
+            const grid = document.getElementById('textbooksGrid');
+            if (allTextbooks.length === 0) { grid.innerHTML = '<p>No textbooks available for your enrolled courses.</p>'; return; }
+            let html = '';
+            for (let t of allTextbooks) { html += `<div class="resource-card" onclick="downloadTextbook(${t.id})"><div class="note-color" style="background: #3b82f6;"></div><h4><i class="fa-solid fa-file-pdf"></i> ${escapeHtml(t.title)}</h4><p>${escapeHtml(t.description || 'No description')}</p><div style="display: flex; justify-content: space-between; margin-top: 10px;"><small><i class="fa-regular fa-file"></i> ${escapeHtml(t.fileName)}</small><small><i class="fa-regular fa-clock"></i> Uploaded: ${formatDate(t.uploadDate)}</small><small>📄 ${(t.fileSize / 1024).toFixed(2)} KB</small></div>${t.courseName ? `<small><i class="fa-solid fa-book"></i> Course: ${escapeHtml(t.courseName)}</small>` : ''}<div style="margin-top: 15px;"><span class="btn-blue-sm" style="padding: 8px 16px;"><i class="fa-solid fa-download"></i> Download</span></div></div>`; }
+            grid.innerHTML = html;
+        } catch(e) { console.error('Error loading textbooks:', e); document.getElementById('textbooksGrid').innerHTML = '<p>Error loading textbooks.</p>'; }
+    }
+    async function downloadTextbook(textbookId) {
+        showNotification('Starting download...', 'info');
+        try {
+            const response = await fetch(`/api/textbooks/download/${textbookId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            if (response.ok) { const blob = await response.blob(); const disposition = response.headers.get('Content-Disposition'); let filename = 'textbook.pdf'; if (disposition && disposition.includes('filename=')) filename = disposition.split('filename=')[1].replace(/["']/g, ''); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); a.remove(); showNotification('Download started!', 'success'); }
+            else { const error = await response.json(); showNotification(error.error || 'Download failed', 'error'); }
+        } catch (error) { console.error('Download error:', error); showNotification('Error downloading file. Please try again.', 'error'); }
+    }
+
+    // ==================== BILLING FUNCTIONS - UPDATED ====================
+    async function loadBillingSummary() {
+        try {
+            const response = await fetch(API_BASE_URL + '/billing/summary', {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+
+            if (!response.ok) {
+                console.error('Failed to load billing summary');
+                return;
+            }
+
+            const summary = await response.json();
+
+            const outstandingBalance = summary.totalOutstandingBalance || 0;
+            document.getElementById('outstandingBalance').textContent = `$${outstandingBalance.toFixed(2)}`;
+
+            const container = document.getElementById('billingSummary');
+            let html = `
+                <div class="stats-grid" style="margin-bottom: 20px;">
+                    <div class="stat-card" style="background: #fee2e2;">
+                        <h3>$${outstandingBalance.toFixed(2)}</h3>
+                        <p>Total Outstanding</p>
+                    </div>
+                    <div class="stat-card" style="background: #d1fae5;">
+                        <h3>${summary.activeCourses || 0}</h3>
+                        <p>Active Courses</p>
+                    </div>
+                    <div class="stat-card" style="background: #fef3c7;">
+                        <h3>${summary.expiredTrials || 0}</h3>
+                        <p>Expired Trials</p>
+                    </div>
+                </div>
+            `;
+
+            if (outstandingBalance > 0) {
+                html += `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <button class="btn-yellow-sm" onclick="payAllOutstanding()">
+                            <i class="fa-solid fa-credit-card"></i> Pay All ($${outstandingBalance.toFixed(2)})
+                        </button>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            const paymentsContainer = document.getElementById('coursePaymentsList');
+            if (summary.enrollments && summary.enrollments.length > 0) {
+                let paymentsHtml = '';
+                for (let e of summary.enrollments) {
+                    let statusBadge = '';
+
+                    if (e.canAccessContent) {
+                        if (e.trialActive) {
+                            statusBadge = '<span style="color: #22c55e; background: #d1fae5; padding: 4px 8px; border-radius: 12px; font-size: 12px;">✓ Trial Active</span>';
+                        } else if (e.subscriptionActive) {
+                            statusBadge = '<span style="color: #22c55e; background: #d1fae5; padding: 4px 8px; border-radius: 12px; font-size: 12px;">✓ Active</span>';
+                        } else {
+                            statusBadge = '<span style="color: #22c55e; background: #d1fae5; padding: 4px 8px; border-radius: 12px; font-size: 12px;">✓ Active</span>';
+                        }
+                    } else {
+                        if (e.trialUsed && !e.trialActive && e.outstandingBalance > 0) {
+                            statusBadge = '<span style="color: #ef4444; background: #fee2e2; padding: 4px 8px; border-radius: 12px; font-size: 12px;">⚠️ Trial Expired</span>';
+                        } else {
+                            statusBadge = '<span style="color: #f59e0b; background: #fef3c7; padding: 4px 8px; border-radius: 12px; font-size: 12px;">⚠️ Inactive</span>';
+                        }
+                    }
+
+                    paymentsHtml += `
+                        <div class="course-card" style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <h4 style="margin: 0;">${escapeHtml(e.courseName)}</h4>
+                                ${statusBadge}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <p><strong>Outstanding Balance:</strong> $${e.outstandingBalance.toFixed(2)}</p>
+                                ${e.trialActive && e.trialDaysRemaining > 0 ?
+                                    `<p><strong>Trial:</strong> ${e.trialDaysRemaining} days remaining</p>` : ''}
+                                ${e.subscriptionActive && e.subscriptionDaysRemaining > 0 ?
+                                    `<p><strong>Subscription:</strong> ${e.subscriptionDaysRemaining} days remaining</p>` : ''}
+                                ${!e.trialActive && !e.subscriptionActive && e.outstandingBalance > 0 ?
+                                    `<p style="color: #ef4444;"><strong>Status:</strong> Your trial has expired. Please subscribe to continue access.</p>` : ''}
+                            </div>
+                            ${e.outstandingBalance > 0 ?
+                                `<div style="margin-top: 15px;">
+                                    <button class="btn-yellow-sm" onclick="payForCourse(${e.enrollmentId})">
+                                        <i class="fa-solid fa-credit-card"></i> Pay $${e.outstandingBalance.toFixed(2)}
+                                    </button>
+                                </div>` : ''}
+                        </div>
+                    `;
+                }
+                paymentsContainer.innerHTML = paymentsHtml;
+            } else {
+                paymentsContainer.innerHTML = '<p>No enrollments yet. Browse courses to get started!</p>';
+            }
+        } catch(e) {
+            console.error('Error loading billing:', e);
+            document.getElementById('billingSummary').innerHTML = '<p>Error loading billing information.</p>';
+        }
+    }
+
+    async function payForCourse(enrollmentId) {
+        const btn = window.event?.currentTarget;
+        const originalText = btn?.innerHTML;
+
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch(API_BASE_URL + `/billing/pay/${enrollmentId}`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                if (data.paymentRequest?.mode === 'mock') {
+                    showNotification('Processing payment...', 'info');
+                    setTimeout(async () => {
+                        await loadBillingSummary();
+                        await loadSubscriptionStatus();
+                        await loadMyCourses();
+                        await loadAvailableCourses();
+                        showNotification('Payment successful! Your subscription is now active.', 'success');
+                    }, 1500);
+                } else if (data.paymentRequest?.payfast) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'https://sandbox.payfast.co.za/eng/process';
+                    for (const [key, value] of Object.entries(data.paymentRequest.payfast)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = value;
+                        form.appendChild(input);
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    showNotification(data.error || 'Payment failed', 'error');
+                }
+            } else {
+                showNotification(data.error || 'Payment failed', 'error');
+            }
+        } catch(e) {
+            console.error('Error processing payment:', e);
+            showNotification('Error processing payment', 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    async function payAllOutstanding() {
+        const btn = window.event?.currentTarget;
+        const originalText = btn?.innerHTML;
+
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.disabled = true;
+        }
+
+        try {
+            const response = await fetch(API_BASE_URL + '/billing/pay-all', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                if (data.paymentRequest?.mode === 'mock') {
+                    showNotification(`Processing payment for all courses...`, 'info');
+                    setTimeout(async () => {
+                        await loadBillingSummary();
+                        await loadSubscriptionStatus();
+                        await loadMyCourses();
+                        await loadAvailableCourses();
+                        showNotification('Payment successful! All subscriptions are now active.', 'success');
+                    }, 1500);
+                } else if (data.paymentRequest?.payfast) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'https://sandbox.payfast.co.za/eng/process';
+                    for (const [key, value] of Object.entries(data.paymentRequest.payfast)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = value;
+                        form.appendChild(input);
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                } else {
+                    showNotification(data.error || 'Payment failed', 'error');
+                }
+            } else {
+                showNotification(data.error || 'Payment failed', 'error');
+            }
+        } catch(e) {
+            console.error('Error processing payment:', e);
+            showNotification('Error processing payment', 'error');
+        } finally {
+            if (btn) {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+    }
+
+    // ==================== COURSE CONTENT - UPDATED WITH ACCESS CHECK ====================
+    function viewCourseContent(courseId) {
+        console.log('Viewing course content for course:', courseId);
+        const courseContentSection = document.getElementById('course-content');
+        if (!courseContentSection) {
+            console.error('Course content section not found');
+            showNotification('Error loading course content', 'error');
+            return;
+        }
+        localStorage.setItem('selectedCourseId', courseId);
+        showSection('course-content');
+        loadCourseContent(courseId);
+    }
+
+    async function loadCourseContent(courseId) {
+        const container = document.getElementById('courseContentDisplay');
+        if (!container) {
+            console.error('Course content display container not found');
+            return;
+        }
+        container.innerHTML = '<div class="loading-spinner">Loading course materials...</div>';
+        try {
+            const courseResponse = await fetch(API_BASE_URL + `/courses/${courseId}/details`, {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+            if (!courseResponse.ok) throw new Error('Failed to load course details');
+            const courseData = await courseResponse.json();
+            const course = courseData.course;
+            const canAccess = courseData.canAccessContent;
+
+            if (!canAccess) {
+                container.innerHTML = `
+                    <div class="access-denied">
+                        <i class="fa-solid fa-lock"></i>
+                        <h2>Access Restricted</h2>
+                        <p>Your trial for this course has expired or you don't have an active subscription.</p>
+                        <button class="btn-yellow-sm" onclick="showSection('billing')">
+                            <i class="fa-solid fa-credit-card"></i> Subscribe Now
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const [assignments, notes, textbooks] = await Promise.all([
+                fetch(API_BASE_URL + `/assignments?courseId=${courseId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } }).then(r => r.json()),
+                fetch(API_BASE_URL + `/notes?courseId=${courseId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } }).then(r => r.json()),
+                fetch(API_BASE_URL + `/textbooks/course/${courseId}`, { headers: { 'Authorization': 'Bearer ' + getToken() } }).then(r => r.ok ? r.json() : [])
+            ]);
+
+            let html = `<div style="margin-bottom: 30px;">
+                <h2>${escapeHtml(course.name)}</h2>
+                <p>${escapeHtml(course.description || 'No description')}</p>
+                <div class="course-info-panel">
+                    <p><strong><i class="fa-solid fa-chalkboard-user"></i> Teacher:</strong> ${escapeHtml(course.teacherName)}</p>
+                    <p><strong><i class="fa-solid fa-dollar-sign"></i> Price:</strong> $${course.price || 29.99}</p>
+                </div>
+            </div>`;
+
+            html += `<h3><i class="fa-solid fa-book"></i> Textbooks</h3>`;
+            if (textbooks && textbooks.length > 0) {
+                html += `<div class="notes-grid">`;
+                for (let t of textbooks) {
+                    html += `<div class="resource-card" onclick="downloadTextbook(${t.id})">
+                        <div class="note-color" style="background: #3b82f6;"></div>
+                        <h4><i class="fa-solid fa-file-pdf"></i> ${escapeHtml(t.title)}</h4>
+                        <p>${escapeHtml(t.description || 'No description')}</p>
+                        <small>${escapeHtml(t.fileName)} (${(t.fileSize / 1024).toFixed(2)} KB)</small>
+                        <div style="margin-top: 15px;"><span class="btn-blue-sm" style="padding: 8px 16px;">Download</span></div>
+                    </div>`;
+                }
+                html += `</div>`;
+            } else {
+                html += `<p>No textbooks available for this course.</p>`;
+            }
+
+            html += `<h3 style="margin-top: 20px;"><i class="fa-solid fa-pen-nib"></i> Study Notes</h3>`;
+            if (notes && notes.length > 0) {
+                html += `<div class="notes-grid">`;
+                for (let n of notes) {
+                    html += `<div class="note-card" onclick="viewNoteDetails(${n.id})">
+                        <div class="note-color" style="background: ${getRandomColor(n.subject)};"></div>
+                        <h4>${escapeHtml(n.title)}</h4>
+                        <p>${escapeHtml(n.subject || 'General')}</p>
+                        <small>${formatDate(n.createdAt)}</small>
+                    </div>`;
+                }
+                html += `</div>`;
+            } else {
+                html += `<p>No notes available for this course.</p>`;
+            }
+
+            html += `<h3 style="margin-top: 20px;"><i class="fa-solid fa-file-arrow-up"></i> Assignments</h3>`;
+            if (assignments && assignments.length > 0) {
+                for (let a of assignments) {
+                    html += `<div style="background:var(--bg); padding:15px; border-radius:12px; margin-bottom:10px;">
+                        <h4>${escapeHtml(a.title)}</h4>
+                        <p>${escapeHtml(a.description)}</p>
+                        <p><strong>Due:</strong> ${formatDateTime(a.dueDate)} | <strong>Max Score:</strong> ${a.maxScore}</p>
+                        ${!a.submitted ?
+                            `<textarea id="submission-${a.id}" style="width:100%; margin:10px 0; padding:10px; border-radius:8px;" placeholder="Write your submission..."></textarea>
+                            <button class="btn-yellow-sm" onclick="submitAssignment(${a.id})">Submit</button>` :
+                            '<p style="color:#22c55e;">✓ Submitted</p>'}
+                    </div>`;
+                }
+            } else {
+                html += `<p>No assignments yet.</p>`;
+            }
+
+            container.innerHTML = html;
+        } catch(e) {
+            console.error('Error loading course content:', e);
+            container.innerHTML = '<p style="color: var(--danger);">Error loading course content</p>';
+        }
+    }
+
+    // ==================== ANNOUNCEMENTS ====================
+    async function loadAnnouncements() {
+        try {
+            const response = await fetch(API_BASE_URL + '/announcements', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+            if (!response.ok) { document.getElementById('announcementsList').innerHTML = '<p>Unable to load announcements.</p>'; return; }
+            const announcements = await response.json();
+            const container = document.getElementById('announcementsList');
+            if (!announcements || announcements.length === 0) { container.innerHTML = '<p>No announcements yet.</p>'; return; }
+            let html = '';
+            for (let a of announcements) { let teacherName = a.teacher?.fullName || a.teacherName || 'Teacher'; html += `<div class="announcement-card"><div style="display: flex; justify-content: space-between;"><h4><i class="fa-solid fa-bullhorn"></i> ${escapeHtml(a.title)}</h4><small>${formatDate(a.createdAt)}</small></div><p>${escapeHtml(a.content)}</p><small><i class="fa-solid fa-user"></i> Posted by: ${escapeHtml(teacherName)}</small>${a.courseName ? `<small style="display: block;"><i class="fa-solid fa-book"></i> Course: ${escapeHtml(a.courseName)}</small>` : ''}</div>`; }
+            container.innerHTML = html;
+        } catch(e) { console.error('Error loading announcements:', e); document.getElementById('announcementsList').innerHTML = '<p>Error loading announcements.</p>'; }
+    }
+
+    // ==================== STATS & USER ====================
+    async function loadStudentStats() {
+        try { const response = await fetch(API_BASE_URL + '/stats', { headers: { 'Authorization': 'Bearer ' + getToken() } }); const stats = await response.json(); document.getElementById('studentStats').innerHTML = `You have ${stats.pendingAssignments || 0} pending assignments and ${stats.completedQuizzes || 0} completed quizzes`; } catch(e) { console.error('Error loading stats:', e); }
+    }
+    async function loadUserInfo() {
+        try { const response = await fetch(API_BASE_URL + '/auth/me', { headers: { 'Authorization': 'Bearer ' + getToken() } }); const user = await response.json(); if (user) { document.getElementById('userName').textContent = user.fullName; document.getElementById('welcomeName').textContent = user.fullName.split(' ')[0]; document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName)}&background=facc15&color=000`; } } catch(e) { console.error('Error loading user info:', e); }
+    }
+
+    window.onclick = function(event) { if (event.target === document.getElementById('profileModal')) closeProfileModal(); if (event.target === document.getElementById('noteModal')) closeNoteModal(); if (event.target === document.getElementById('profileEditModal')) closeProfileEditModal(); if (event.target === document.getElementById('timetableModal')) closeTimetableModal(); if (event.target === document.getElementById('quizModal')) closeQuizModal(); };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!getToken()) { window.location.href = '/'; return; }
+        document.querySelectorAll('.sidebar-nav li').forEach(item => { const sectionId = item.getAttribute('data-section'); if (sectionId) item.onclick = () => showSection(sectionId); });
+        await loadUserInfo();
+        await checkProfileCompletion();
+        await loadSubscriptionStatus();
+        await loadStudentStats();
+        await loadMyCourses();
+        await loadAvailableCourses();
+        await loadAnnouncements();
+        await loadAssignments();
+        await loadQuizzes();
+        await loadNotes();
+        await loadTextbooks();
+        await loadBillingSummary();
+        await loadNotifications();
+        await loadTimetable();
+        const lastSection = localStorage.getItem('lastSection');
+        if (lastSection && document.getElementById(lastSection)) showSection(lastSection);
+    });
+</script>
+</body>
+</html>
