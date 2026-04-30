@@ -133,7 +133,7 @@ mvn verify
 
 This project is proprietary software. Unauthorized copying, distribution, or use is prohibited.
 
-© 2024 StudyGrind. All rights reserved.
+© 2026 StudyGrind. All rights reserved.
 
 ---
 
