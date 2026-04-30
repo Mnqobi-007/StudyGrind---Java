@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: studygrind-postgres
+    environment:
+      POSTGRES_DB: studygrind
+      POSTGRES_USER: studygrind
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-studygrind123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - studygrind-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U studygrind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: studygrind-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USERNAME: studygrind
+      DB_PASSWORD: ${DB_PASSWORD:-studygrind123}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-for-testing-only-min-32-chars}
+      MAIL_ENABLED: "false"
+      PAYFAST_ENABLED: "false"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - uploads_data:/app/uploads
+      - logs_data:/app/logs
+    networks:
+      - studygrind-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:
+  logs_data:
+
+networks:
+  studygrind-network:
+    driver: bridge

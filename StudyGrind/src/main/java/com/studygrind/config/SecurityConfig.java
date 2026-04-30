@@ -64,7 +64,7 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - using AntPathRequestMatcher
+                        // Public endpoints (no authentication required)
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/login.html")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()
@@ -72,21 +72,41 @@ public class SecurityConfig {
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/payment")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/payment/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/pay-all.html")).permitAll()
+
+                        // API auth endpoints (public)
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/courses")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/courses/*/details")).permitAll()
+
+                        // Static resources (public)
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/uploads/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/images/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/css/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/js/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/static/**")).permitAll()
-                        // Dashboard pages - permit but they check auth via JS
+
+                        // Dashboard pages (public but they check auth via JS)
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/student/dashboard")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/teacher/dashboard")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/admin/dashboard")).permitAll()
+
+                        // ============ SECURED ENDPOINTS - ADMIN ONLY ============
+                        // Swagger/OpenAPI - Admin only
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui.html")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api-docs/**")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs/**")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-resources/**")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/webjars/**")).hasRole("ADMIN")
+
+                        // Actuator endpoints - Admin only
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/**")).hasRole("ADMIN")
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator")).hasRole("ADMIN")
+
                         // Verification endpoints - require authentication
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/verification/**")).authenticated()
-                        // All other API endpoints
+
+                        // All other API endpoints require authentication
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
