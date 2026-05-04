@@ -8,12 +8,22 @@ public class PageController {
 
     @GetMapping("/")
     public String index() {
-        return "login";
+        return "index";  // Now serves your marketing landing page
     }
 
     @GetMapping("/login")
     public String loginPage() {
         return "login";
+    }
+
+    @GetMapping("/terms")
+    public String termsPage() {
+        return "terms";
+    }
+
+    @GetMapping("/privacy")
+    public String privacyPage() {
+        return "privacy";
     }
 
     @GetMapping("/student/dashboard")

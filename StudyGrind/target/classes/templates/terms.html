@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyGrind | Terms of Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #000000;
+            --blue: #3b82f6;
+            --yellow: #facc15;
+            --white: #ffffff;
+            --bg: #f8fafc;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            background: var(--bg);
+            color: var(--black);
+        }
+        .navbar {
+            background: var(--black);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .logo-box {
+            background: var(--yellow);
+            color: var(--black);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+        .dot { color: var(--yellow); }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--yellow);
+        }
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--yellow);
+            padding: 8px 20px;
+            border-radius: 10px;
+            color: var(--yellow);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            background: var(--yellow);
+            color: var(--black);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .terms-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .terms-header h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .terms-header p {
+            color: var(--text-gray);
+        }
+        .terms-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        .terms-section h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+        .terms-section p {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .terms-section ul {
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+        .terms-section li {
+            color: var(--text-gray);
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .footer {
+            background: var(--black);
+            color: white;
+            padding: 40px 5% 20px;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--yellow);
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .terms-header h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/'">
+            <span class="logo-box">S</span>
+            <span>StudyGrind<span class="dot">.</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/login" class="btn-login">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="terms-header">
+            <h1>Terms of Service</h1>
+            <p>Last updated: January 2024</p>
+        </div>
+
+        <div class="terms-section">
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using StudyGrind, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2>2. Eligibility</h2>
+            <p>To use StudyGrind, you must:</p>
+            <ul>
+                <li>Be a currently enrolled student at an accredited institution</li>
+                <li>Provide valid student identification for verification</li>
+                <li>Be at least 13 years of age</li>
+                <li>Have parental consent if under 18</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>3. Account Registration</h2>
+            <p>You are responsible for maintaining the confidentiality of your account credentials. You agree to:</p>
+            <ul>
+                <li>Provide accurate and complete information</li>
+                <li>Update your information promptly when changes occur</li>
+                <li>Notify us immediately of any unauthorized account access</li>
+                <li>Accept responsibility for all activities under your account</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>4. Student Verification</h2>
+            <p>StudyGrind requires valid student ID verification to access courses. We reserve the right to:</p>
+            <ul>
+                <li>Request additional verification documents</li>
+                <li>Suspend accounts with unverified or fraudulent information</li>
+                <li>Reject registration if verification fails</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>5. Free Trial Period</h2>
+            <p>New students receive a 14-day free trial when enrolling in a course. During the trial period:</p>
+            <ul>
+                <li>You have full access to all course materials</li>
+                <li>No payment is required</li>
+                <li>You may unenroll at any time without charge</li>
+                <li>After 14 days, payment is required to continue access</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>6. Payments and Subscriptions</h2>
+            <p><strong>Per Course Pricing:</strong> $29.99 per course - One-time payment for lifetime access</p>
+            <p><strong>Premium Subscription:</strong> $19.99/month - Access to ALL courses with unlimited downloads</p>
+            <p><strong>Annual Subscription (Best Value):</strong> $199.99/year - Save 33% compared to monthly. All courses access + priority support + certificates for every completed course</p>
+            <ul>
+                <li>Payments are processed securely through PayFast</li>
+                <li>Subscriptions auto-renew unless cancelled</li>
+                <li>You may cancel anytime before next billing cycle</li>
+                <li>Refunds are available within 7 days of payment</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>7. Course Content and Intellectual Property</h2>
+            <p>All course materials, including videos, notes, assignments, and quizzes, are the intellectual property of StudyGrind and our instructors. You may not:</p>
+            <ul>
+                <li>Download, copy, or redistribute course materials</li>
+                <li>Share your account credentials with others</li>
+                <li>Use course content for commercial purposes</li>
+                <li>Record or rebroadcast lectures</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>8. User Conduct</h2>
+            <p>You agree to use StudyGrind responsibly and not to:</p>
+            <ul>
+                <li>Harass, threaten, or abuse other users</li>
+                <li>Post inappropriate or offensive content</li>
+                <li>Cheat on quizzes or assignments</li>
+                <li>Attempt to bypass security measures</li>
+                <li>Use automated scripts or bots</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>9. Termination</h2>
+            <p>We reserve the right to suspend or terminate accounts that violate these terms, including:</p>
+            <ul>
+                <li>Fake or invalid student verification</li>
+                <li>Academic dishonesty or cheating</li>
+                <li>Abusive behavior toward staff or students</li>
+                <li>Non-payment of fees</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>10. Limitation of Liability</h2>
+            <p>StudyGrind is not responsible for:</p>
+            <ul>
+                <li>Technical issues or downtime beyond our control</li>
+                <li>Loss of data or course progress</li>
+                <li>Third-party services or links</li>
+                <li>Academic outcomes or grades</li>
+            </ul>
+        </div>
+
+        <div class="terms-section">
+            <h2>11. Changes to Terms</h2>
+            <p>We may update these terms periodically. Continued use of StudyGrind after changes constitutes acceptance of the new terms.</p>
+        </div>
+
+        <div class="terms-section">
+            <h2>12. Contact Information</h2>
+            <p>For questions about these terms, contact us at <strong>legal@studygrind.com</strong></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/login">Login</a>
+        </div>
+        <p>&copy; 2024 StudyGrind. All rights reserved.</p>
+    </footer>
+</body>
+</html>

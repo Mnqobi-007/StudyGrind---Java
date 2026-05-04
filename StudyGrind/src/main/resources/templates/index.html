@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>StudyGrind | Engineered for Academic Growth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #000000;
+            --deep-blue: #1e40af;
+            --electric-blue: #3b82f6;
+            --vibrant-yellow: #facc15;
+            --off-white: #f8fafc;
+            --gray-text: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--black);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .logo-box {
+            background: var(--vibrant-yellow);
+            color: var(--black);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .dot { color: var(--vibrant-yellow); }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover { color: var(--vibrant-yellow); }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--vibrant-yellow);
+            padding: 8px 20px;
+            border-radius: 10px;
+            color: var(--vibrant-yellow);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-login:hover {
+            background: var(--vibrant-yellow);
+            color: var(--black);
+        }
+
+        .btn-signup {
+            background: var(--vibrant-yellow);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            color: var(--black);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-signup:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 80px;
+        }
+
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(30, 64, 175, 0.6) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            color: white;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span { color: var(--vibrant-yellow); }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--vibrant-yellow);
+            color: var(--black);
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--black);
+        }
+
+        .stats-section, .features-section, .howitworks-section, .pricing-section {
+            padding: 80px 5%;
+        }
+
+        .stats-section { background: white; }
+        .features-section { background: var(--off-white); }
+        .howitworks-section { background: white; }
+        .pricing-section { background: var(--off-white); }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--gray-text);
+            font-size: 18px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .stat-card i {
+            font-size: 48px;
+            color: var(--electric-blue);
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 36px;
+            font-weight: 800;
+        }
+
+        .stat-card p { color: var(--gray-text); }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--electric-blue);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--electric-blue) 0%, var(--deep-blue) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .feature-icon i { font-size: 40px; color: white; }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p { color: var(--gray-text); }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step { text-align: center; }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--vibrant-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .step p { color: var(--gray-text); }
+
+        .testimonials-section {
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--electric-blue) 100%);
+            padding: 80px 5%;
+            color: white;
+        }
+
+        .testimonials-section .section-header h2,
+        .testimonials-section .section-header p { color: white; }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .testimonial-card i {
+            font-size: 40px;
+            color: var(--vibrant-yellow);
+            margin-bottom: 20px;
+        }
+
+        .testimonial-card p { margin-bottom: 20px; line-height: 1.6; }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .testimonial-author h4 { font-size: 16px; font-weight: 700; }
+
+        .testimonial-author span { font-size: 12px; opacity: 0.8; }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--vibrant-yellow);
+            transform: scale(1.02);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--vibrant-yellow);
+            color: var(--black);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pricing-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--electric-blue);
+            margin-bottom: 20px;
+        }
+
+        .price span {
+            font-size: 16px;
+            color: var(--gray-text);
+        }
+
+        .price-small {
+            font-size: 14px;
+            color: var(--gray-text);
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+
+        .savings-badge {
+            background: #22c55e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .pricing-card li {
+            padding: 10px 0;
+            color: var(--gray-text);
+        }
+
+        .pricing-card li i {
+            color: var(--success);
+            margin-right: 10px;
+        }
+
+        .btn-pricing {
+            background: var(--black);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-pricing:hover {
+            background: var(--electric-blue);
+            transform: translateY(-2px);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--black) 0%, var(--deep-blue) 100%);
+            padding: 80px 5%;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn-cta {
+            background: var(--vibrant-yellow);
+            color: var(--black);
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-cta:hover {
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        .footer {
+            background: var(--black);
+            color: white;
+            padding: 60px 5% 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #94a3b8;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover { color: var(--vibrant-yellow); }
+
+        .footer-section ul { list-style: none; }
+
+        .footer-section li { margin-bottom: 10px; }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--vibrant-yellow);
+            color: var(--black);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+
+        .owl-mascot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        .owl-mascot:hover { opacity: 1; }
+
+        .mascot-logo {
+            width: 55px;
+            animation: gentleBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes gentleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: var(--black);
+                flex-direction: column;
+                padding: 40px;
+                transition: left 0.3s;
+            }
+            .nav-links.active { left: 0; }
+            .hero h1 { font-size: 36px; }
+            .section-header h2 { font-size: 28px; }
+            .pricing-card.featured { transform: scale(1); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo" onclick="scrollToSection('home')">
+        <span class="logo-box">S</span>
+        <span>StudyGrind<span class="dot">.</span></span>
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+    <div class="nav-links" id="navLinks">
+        <a onclick="scrollToSection('home')">Home</a>
+        <a onclick="scrollToSection('features')">Features</a>
+        <a onclick="scrollToSection('howitworks')">How It Works</a>
+        <a onclick="scrollToSection('pricing')">Pricing</a>
+        <div class="nav-buttons">
+            <button class="btn-login" onclick="goToLogin()">Login</button>
+            <button class="btn-signup" onclick="goToLogin()">Sign Up</button>
+        </div>
+    </div>
+</nav>
+
+<section id="home" class="hero">
+    <video autoplay muted loop playsinline class="bg-video">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-blue-and-yellow-swirling-liquid-art-41315-large.mp4" type="video/mp4">
+    </video>
+    <div class="hero-content">
+        <h1>The future is <span>bright</span>.</h1>
+        <p>Access the world's most innovative learning platform with one click. Learn from industry experts and accelerate your career with StudyGrind.</p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="goToLogin()">Get Started Free →</button>
+            <button class="btn-secondary" onclick="scrollToSection('features')">Learn More</button>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card"><i class="fa-solid fa-users"></i><h3>10,000+</h3><p>Active Students</p></div>
+        <div class="stat-card"><i class="fa-solid fa-chalkboard-user"></i><h3>500+</h3><p>Expert Teachers</p></div>
+        <div class="stat-card"><i class="fa-solid fa-book"></i><h3>200+</h3><p>Courses Available</p></div>
+        <div class="stat-card"><i class="fa-solid fa-clock"></i><h3>14-Day</h3><p>Free Trial</p></div>
+    </div>
+</section>
+
+<section id="features" class="features-section">
+    <div class="section-header">
+        <h2>Why Choose StudyGrind?</h2>
+        <p>Engineered for academic growth with features designed for success</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3>Expert Teachers</h3>
+            <p>Learn from industry professionals with years of teaching experience.</p>
+        </div>
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-solid fa-clock"></i></div>
+            <h3>14-Day Free Trial</h3>
+            <p>Try any course free for 14 days before committing to a subscription.</p>
+        </div>
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-solid fa-file-alt"></i></div>
+            <h3>Assignments & Quizzes</h3>
+            <p>Test your knowledge with auto-graded quizzes and assignments.</p>
+        </div>
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-solid fa-download"></i></div>
+            <h3>Downloadable Resources</h3>
+            <p>Access textbooks, notes, and materials anytime, anywhere.</p>
+        </div>
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-solid fa-credit-card"></i></div>
+            <h3>Flexible Payments</h3>
+            <p>Pay per course or subscribe monthly with PayFast integration.</p>
+        </div>
+        <div class="feature-card" onclick="goToLogin()">
+            <div class="feature-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <h3>WhatsApp Community</h3>
+            <p>Join discussion groups to connect with fellow students.</p>
+        </div>
+    </div>
+</section>
+
+<section id="howitworks" class="howitworks-section">
+    <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Get started in three simple steps</p>
+    </div>
+    <div class="steps-grid">
+        <div class="step"><div class="step-number">1</div><h3>Create Account</h3><p>Sign up with your student ID card for verification.</p></div>
+        <div class="step"><div class="step-number">2</div><h3>Browse Courses</h3><p>Choose from hundreds of courses in various subjects.</p></div>
+        <div class="step"><div class="step-number">3</div><h3>Start Learning</h3><p>Enroll with 14-day free trial and begin your journey.</p></div>
+    </div>
+</section>
+
+<section class="testimonials-section">
+    <div class="section-header">
+        <h2>What Our Students Say</h2>
+        <p>Join thousands of satisfied learners worldwide</p>
+    </div>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"StudyGrind transformed my learning experience. The interactive quizzes and assignments helped me master complex topics quickly."</p>
+            <div class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=3b82f6&color=fff" alt="Sarah Johnson">
+                <div><h4>Sarah Johnson</h4><span>Computer Science Student</span></div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"The 14-day free trial gave me confidence to enroll. The platform is intuitive and the teachers are truly experts."</p>
+            <div class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Michael+Chen&background=3b82f6&color=fff" alt="Michael Chen">
+                <div><h4>Michael Chen</h4><span>Engineering Student</span></div>
+            </div>
+        </div>
+        <div class="testimonial-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"Best investment in my education. The WhatsApp community is amazing for networking and getting help."</p>
+            <div class="testimonial-author">
+                <img src="https://ui-avatars.com/api/?name=Thabo+Nkosi&background=3b82f6&color=fff" alt="Thabo Nkosi">
+                <div><h4>Thabo Nkosi</h4><span>Business Student</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="pricing" class="pricing-section">
+    <div class="section-header">
+        <h2>Simple, Transparent Pricing</h2>
+        <p>Choose the plan that works for you. All plans include a 14-day free trial per course.</p>
+    </div>
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <h3>Free Trial</h3>
+            <div class="price">$0<span>/14 days</span></div>
+            <ul>
+                <li><i class="fa-solid fa-check"></i> Full course access for 14 days</li>
+                <li><i class="fa-solid fa-check"></i> All learning materials</li>
+                <li><i class="fa-solid fa-check"></i> Quizzes & assignments</li>
+                <li><i class="fa-solid fa-check"></i> WhatsApp community access</li>
+                <li><i class="fa-solid fa-check"></i> No credit card required</li>
+            </ul>
+            <button class="btn-pricing" onclick="goToLogin()">Start Free Trial</button>
+        </div>
+        <div class="pricing-card">
+            <h3>Per Course</h3>
+            <div class="price">$29.99<span>/course</span></div>
+            <ul>
+                <li><i class="fa-solid fa-check"></i> Lifetime access to one course</li>
+                <li><i class="fa-solid fa-check"></i> Certificate of completion</li>
+                <li><i class="fa-solid fa-check"></i> Downloadable materials</li>
+                <li><i class="fa-solid fa-check"></i> Priority support</li>
+                <li><i class="fa-solid fa-check"></i> One-time payment</li>
+            </ul>
+            <button class="btn-pricing" onclick="goToLogin()">Enroll Now</button>
+        </div>
+        <div class="pricing-card featured">
+            <div class="popular-badge">BEST VALUE</div>
+            <h3>Premium Monthly</h3>
+            <div class="price">$19.99<span>/month</span></div>
+            <div class="price-small">33% less than per course</div>
+            <ul>
+                <li><i class="fa-solid fa-check"></i> Access to ALL courses</li>
+                <li><i class="fa-solid fa-check"></i> Unlimited downloads</li>
+                <li><i class="fa-solid fa-check"></i> Certificate for each completed course</li>
+                <li><i class="fa-solid fa-check"></i> Priority support</li>
+                <li><i class="fa-solid fa-check"></i> Cancel anytime</li>
+            </ul>
+            <button class="btn-pricing" onclick="goToLogin()">Subscribe Monthly</button>
+        </div>
+        <div class="pricing-card">
+            <div class="savings-badge">SAVE 33%</div>
+            <h3>Premium Annual</h3>
+            <div class="price">$199.99<span>/year</span></div>
+            <div class="price-small">Only $16.67/month - Save $40 compared to monthly</div>
+            <ul>
+                <li><i class="fa-solid fa-check"></i> Everything in Premium Monthly</li>
+                <li><i class="fa-solid fa-check"></i> 2 months free</li>
+                <li><i class="fa-solid fa-check"></i> Exclusive webinar access</li>
+                <li><i class="fa-solid fa-check"></i> Advanced analytics dashboard</li>
+                <li><i class="fa-solid fa-check"></i> Career guidance resources</li>
+            </ul>
+            <button class="btn-pricing" onclick="goToLogin()">Subscribe Annually</button>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2>Ready to Start Your Learning Journey?</h2>
+    <p>Join thousands of students already growing with StudyGrind</p>
+    <button class="btn-cta" onclick="goToLogin()">Get Started Free →</button>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>StudyGrind</h3>
+            <p>Engineered for Academic Growth. Empowering students worldwide to achieve their educational goals.</p>
+        </div>
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a onclick="scrollToSection('home')">Home</a></li>
+                <li><a onclick="scrollToSection('features')">Features</a></li>
+                <li><a onclick="scrollToSection('howitworks')">How It Works</a></li>
+                <li><a onclick="scrollToSection('pricing')">Pricing</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Legal</h3>
+            <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Connect With Us</h3>
+            <div class="social-links">
+                <a href="#" onclick="window.open('https://facebook.com', '_blank')"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" onclick="window.open('https://twitter.com', '_blank')"><i class="fab fa-twitter"></i></a>
+                <a href="#" onclick="window.open('https://linkedin.com', '_blank')"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" onclick="window.open('https://instagram.com', '_blank')"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 StudyGrind. All rights reserved. Engineered for Academic Growth.</p>
+    </div>
+</footer>
+
+<div class="owl-mascot" onclick="window.location.href='/'">
+    <img src="/images/StudyGrind%20logo%20with%20owl%20mascot-clean.png" alt="StudyGrind Logo" class="mascot-logo" onerror="this.src='https://placehold.co/55x55/facc15/000?text=S'">
+</div>
+
+<script>
+    // Mobile menu toggle
+    function toggleMenu() {
+        document.getElementById('navLinks').classList.toggle('active');
+    }
+
+    // Smooth scroll to section
+    function scrollToSection(sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('navLinks').classList.remove('active');
+        }
+    }
+
+    // FIXED: Redirect to login page - always go to login
+    function goToLogin() {
+        window.location.href = '/login';
+    }
+
+    // Close mobile menu when clicking links
+    document.querySelectorAll('.nav-links a, .footer-section a').forEach(link => {
+        link.addEventListener('click', () => {
+            document.getElementById('navLinks').classList.remove('active');
+        });
+    });
+
+    // Navbar background change on scroll
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.style.background = window.scrollY > 50 ? 'rgba(0, 0, 0, 0.98)' : 'rgba(0, 0, 0, 0.95)';
+        }
+    });
+
+    // Animate stats counters
+    const animateNumbers = () => {
+        const statNumbers = document.querySelectorAll('.stat-card h3');
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.innerText.replace(/[+,]/g, ''));
+            let current = 0;
+            const increment = target / 50;
+            const updateNumber = () => {
+                if (current < target) {
+                    current += increment;
+                    if (target >= 1000) {
+                        stat.innerText = Math.ceil(current).toLocaleString() + '+';
+                    } else {
+                        stat.innerText = Math.ceil(current).toLocaleString();
+                    }
+                    requestAnimationFrame(updateNumber);
+                } else {
+                    if (target >= 1000) {
+                        stat.innerText = target.toLocaleString() + '+';
+                    } else {
+                        stat.innerText = target.toLocaleString();
+                    }
+                }
+            };
+            updateNumber();
+        });
+    };
+
+    // Trigger animation when stats section is in view
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateNumbers();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+        observer.observe(statsSection);
+    }
+
+    // Handle feature card clicks
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach(card => {
+        card.addEventListener('click', goToLogin);
+    });
+
+    // Handle pricing buttons
+    const pricingBtns = document.querySelectorAll('.btn-pricing');
+    pricingBtns.forEach(btn => {
+        btn.addEventListener('click', goToLogin);
+    });
+
+    // Handle CTA button
+    const ctaBtn = document.querySelector('.btn-cta');
+    if (ctaBtn) ctaBtn.addEventListener('click', goToLogin);
+</script>
+</body>
+</html>

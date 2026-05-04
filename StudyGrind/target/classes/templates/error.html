@@ -4,18 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyGrind | Error</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/c427389445.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --black: #000000;
-            --blue: #3b82f6;
-            --yellow: #facc15;
-            --white: #ffffff;
-            --bg: #f8fafc;
-            --text-gray: #64748b;
+            --deep-blue: #1e40af;
+            --electric-blue: #3b82f6;
+            --vibrant-yellow: #facc15;
+            --off-white: #f8fafc;
+            --gray-text: #64748b;
             --border: #e2e8f0;
-            --danger: #ef4444;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #f59e0b;
         }
 
         * {
@@ -26,7 +28,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0c0a2a 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -48,7 +50,7 @@
 
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(250, 204, 21, 0.1);
             border-radius: 50%;
             animation: float 20s infinite ease-in-out;
         }
@@ -76,14 +78,15 @@
         .error-container {
             position: relative;
             z-index: 1;
-            background: white;
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 40px;
             padding: 60px 80px;
             text-align: center;
-            max-width: 600px;
+            max-width: 650px;
             width: 90%;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
         }
 
         @keyframes slideUp {
@@ -112,6 +115,7 @@
             border-radius: 24px;
             margin-bottom: 15px;
             animation: bounce 2s ease-in-out infinite;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes bounce {
@@ -125,23 +129,69 @@
 
         .logo-icon i {
             font-size: 48px;
-            color: var(--yellow);
+            color: var(--vibrant-yellow);
         }
 
         .logo h1 {
             font-size: 36px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--black) 0%, var(--blue) 100%);
+            background: linear-gradient(135deg, var(--black) 0%, var(--electric-blue) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -1px;
         }
 
         .logo p {
             font-size: 12px;
             letter-spacing: 2px;
-            color: var(--text-gray);
+            color: var(--gray-text);
             margin-top: 5px;
+        }
+
+        /* Owl Mascot */
+        .owl-mascot {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .owl-mascot:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .mascot-logo {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--vibrant-yellow) 0%, #fbbf24 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
+            animation: wiggle 3s ease-in-out infinite;
+        }
+
+        .mascot-logo i {
+            font-size: 35px;
+            color: var(--black);
+        }
+
+        @keyframes wiggle {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(5deg);
+            }
+            75% {
+                transform: rotate(-5deg);
+            }
         }
 
         /* Error Icon */
@@ -151,8 +201,23 @@
 
         .error-icon i {
             font-size: 80px;
-            color: var(--danger);
             animation: shake 0.5s ease-in-out;
+        }
+
+        .error-icon .fa-circle-exclamation {
+            color: var(--error);
+        }
+
+        .error-icon .fa-ban {
+            color: var(--error);
+        }
+
+        .error-icon .fa-lock {
+            color: var(--warning);
+        }
+
+        .error-icon .fa-question-circle {
+            color: var(--electric-blue);
         }
 
         @keyframes shake {
@@ -171,20 +236,51 @@
         .status-code {
             font-size: 120px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--danger) 0%, #f97316 100%);
+            background: linear-gradient(135deg, var(--error) 0%, #f97316 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1;
             margin-bottom: 10px;
+            letter-spacing: -5px;
+        }
+
+        .status-code.error-401,
+        .status-code.error-403 {
+            background: linear-gradient(135deg, var(--warning) 0%, var(--error) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .status-code.error-404 {
+            background: linear-gradient(135deg, var(--electric-blue) 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .status-code.error-500 {
+            background: linear-gradient(135deg, var(--error) 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        /* Title */
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 20px 0 10px;
+            color: var(--black);
         }
 
         /* Message */
         .error-message {
-            font-size: 18px;
-            color: var(--text-gray);
+            font-size: 16px;
+            color: var(--gray-text);
             margin: 20px 0;
             line-height: 1.6;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Action Buttons */
@@ -209,17 +305,18 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            font-size: 15px;
         }
 
         .btn-primary:hover {
-            background: var(--blue);
+            background: var(--electric-blue);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
         }
 
         .btn-secondary {
             padding: 14px 28px;
-            background: var(--yellow);
+            background: var(--vibrant-yellow);
             color: var(--black);
             border: none;
             border-radius: 12px;
@@ -230,10 +327,33 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            font-size: 15px;
         }
 
         .btn-secondary:hover {
             background: var(--black);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            padding: 14px 28px;
+            background: transparent;
+            color: var(--electric-blue);
+            border: 2px solid var(--electric-blue);
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-outline:hover {
+            background: var(--electric-blue);
             color: white;
             transform: translateY(-2px);
         }
@@ -244,62 +364,95 @@
             padding-top: 20px;
             border-top: 1px solid var(--border);
             font-size: 13px;
-            color: var(--text-gray);
+            color: var(--gray-text);
         }
 
         .help-text a {
-            color: var(--blue);
+            color: var(--electric-blue);
             text-decoration: none;
+            font-weight: 600;
         }
 
         .help-text a:hover {
             text-decoration: underline;
         }
 
-        /* Owl Mascot Animation */
-        .owl-mascot {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            opacity: 0.6;
-            transition: opacity 0.3s;
+        /* Additional Info */
+        .error-details {
+            background: var(--off-white);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 13px;
+            color: var(--gray-text);
+            max-height: 200px;
+            overflow-y: auto;
         }
 
-        .owl-mascot:hover {
-            opacity: 1;
+        .error-details p {
+            margin: 5px 0;
         }
 
-        .owl-mascot i {
-            font-size: 60px;
-            color: var(--yellow);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            animation: wiggle 3s ease-in-out infinite;
+        .error-details code {
+            background: var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
         }
 
-        @keyframes wiggle {
-            0%, 100% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(5deg);
-            }
-            75% {
-                transform: rotate(-5deg);
-            }
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
             .error-container {
                 padding: 40px 30px;
             }
             .status-code {
                 font-size: 80px;
+                letter-spacing: -3px;
+            }
+            h2 {
+                font-size: 22px;
             }
             .action-buttons {
                 flex-direction: column;
             }
-            .btn-primary, .btn-secondary {
+            .btn-primary, .btn-secondary, .btn-outline {
                 justify-content: center;
+                width: 100%;
+            }
+            .owl-mascot {
+                bottom: 15px;
+                right: 15px;
+            }
+            .mascot-logo {
+                width: 50px;
+                height: 50px;
+            }
+            .mascot-logo i {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 30px 20px;
+            }
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .logo-icon i {
+                font-size: 36px;
+            }
+            .logo h1 {
+                font-size: 28px;
+            }
+            .status-code {
+                font-size: 60px;
+            }
+            .error-message {
+                font-size: 14px;
             }
         }
     </style>
@@ -310,12 +463,14 @@
 <div class="particles" id="particles"></div>
 
 <!-- Owl Mascot -->
-<div class="owl-mascot">
-    <i class="fa-solid fa-owl"></i>
+<div class="owl-mascot" onclick="window.location.href='/'">
+    <div class="mascot-logo">
+        <i class="fa-solid fa-owl"></i>
+    </div>
 </div>
 
 <!-- Main Error Container -->
-<div class="error-container">
+<div class="error-container" id="errorContainer">
     <div class="logo">
         <div class="logo-icon">
             <i class="fa-solid fa-graduation-cap"></i>
@@ -324,29 +479,36 @@
         <p>ENGINEERED FOR ACADEMIC GROWTH</p>
     </div>
 
-    <div class="error-icon">
+    <div class="error-icon" id="errorIcon">
         <i class="fa-solid fa-circle-exclamation"></i>
     </div>
 
-    <div class="status-code" th:text="${statusCode}">404</div>
-    
-    <h2 th:text="${statusCode == 404 ? 'Page Not Found' : (statusCode == 401 ? 'Unauthorized Access' : (statusCode == 403 ? 'Access Denied' : 'Something Went Wrong'))}">Something Went Wrong</h2>
-    
-    <div class="error-message" th:text="${errorMessage}">
+    <div class="status-code" id="statusCode">404</div>
+
+    <h2 id="errorTitle">Page Not Found</h2>
+
+    <div class="error-message" id="errorMessage">
         The page you're looking for doesn't exist or has been moved.
     </div>
 
     <div class="action-buttons">
-        <a href="/" class="btn-primary">
+        <a href="/" class="btn-primary" id="homeBtn">
             <i class="fa-solid fa-house"></i> Back to Home
         </a>
         <a href="javascript:history.back()" class="btn-secondary">
             <i class="fa-solid fa-arrow-left"></i> Go Back
         </a>
+        <a href="/login" class="btn-outline" id="loginBtn" style="display: none;">
+            <i class="fa-solid fa-sign-in-alt"></i> Login Again
+        </a>
     </div>
 
     <div class="help-text">
         <i class="fa-solid fa-headset"></i> Need help? <a href="mailto:support@studygrind.com">Contact Support</a>
+    </div>
+
+    <div class="error-details" id="errorDetails" style="display: none;">
+        <!-- Error details will be populated here -->
     </div>
 </div>
 
@@ -354,12 +516,14 @@
     // Create animated particles
     function createParticles() {
         const container = document.getElementById('particles');
-        const particleCount = 50;
-        
+        if (!container) return;
+
+        const particleCount = 60;
+
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
-            const size = Math.random() * 8 + 2;
+            const size = Math.random() * 10 + 2;
             particle.style.width = size + 'px';
             particle.style.height = size + 'px';
             particle.style.left = Math.random() * 100 + '%';
@@ -369,8 +533,187 @@
             container.appendChild(particle);
         }
     }
-    
-    createParticles();
+
+    // Get error information from URL or server
+    function getErrorInfo() {
+        // Try to get from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        let statusCode = urlParams.get('code');
+        let errorMessage = urlParams.get('message');
+        let errorTitle = urlParams.get('title');
+
+        // If not in URL, try to get from server-side (Thymeleaf would populate these)
+        const statusCodeElement = document.getElementById('statusCode');
+        if (statusCodeElement && statusCodeElement.textContent !== '404') {
+            statusCode = statusCodeElement.textContent;
+        }
+
+        // Default values based on status code
+        statusCode = statusCode || '404';
+
+        let icon = 'fa-circle-exclamation';
+        let title = '';
+        let message = '';
+        let showLoginBtn = false;
+
+        switch (statusCode) {
+            case '401':
+                icon = 'fa-lock';
+                title = 'Unauthorized Access';
+                message = 'You need to be logged in to access this page. Please log in and try again.';
+                showLoginBtn = true;
+                break;
+            case '403':
+                icon = 'fa-ban';
+                title = 'Access Denied';
+                message = 'You don\'t have permission to access this page. Please contact an administrator if you believe this is an error.';
+                showLoginBtn = true;
+                break;
+            case '404':
+                icon = 'fa-question-circle';
+                title = 'Page Not Found';
+                message = 'The page you\'re looking for doesn\'t exist or has been moved.';
+                showLoginBtn = false;
+                break;
+            case '500':
+                icon = 'fa-circle-exclamation';
+                title = 'Server Error';
+                message = 'Something went wrong on our end. Please try again later or contact support.';
+                showLoginBtn = false;
+                break;
+            case '503':
+                icon = 'fa-clock';
+                title = 'Service Unavailable';
+                message = 'The service is temporarily unavailable. Please try again in a few minutes.';
+                showLoginBtn = false;
+                break;
+            default:
+                icon = 'fa-circle-exclamation';
+                title = errorTitle || 'Something Went Wrong';
+                message = errorMessage || 'An unexpected error occurred. Please try again.';
+                showLoginBtn = false;
+        }
+
+        // Update DOM elements
+        const errorIcon = document.getElementById('errorIcon');
+        const statusCodeEl = document.getElementById('statusCode');
+        const errorTitleEl = document.getElementById('errorTitle');
+        const errorMessageEl = document.getElementById('errorMessage');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if (errorIcon) {
+            errorIcon.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+        }
+
+        if (statusCodeEl) {
+            statusCodeEl.textContent = statusCode;
+            // Add appropriate class for gradient styling
+            statusCodeEl.className = 'status-code';
+            if (statusCode === '401' || statusCode === '403') {
+                statusCodeEl.classList.add('error-401');
+            } else if (statusCode === '404') {
+                statusCodeEl.classList.add('error-404');
+            } else if (statusCode === '500') {
+                statusCodeEl.classList.add('error-500');
+            }
+        }
+
+        if (errorTitleEl) {
+            errorTitleEl.textContent = title;
+        }
+
+        if (errorMessageEl) {
+            errorMessageEl.textContent = message;
+        }
+
+        if (loginBtn && showLoginBtn) {
+            loginBtn.style.display = 'inline-flex';
+        }
+    }
+
+    // Check if user was logged out and show appropriate message
+    function checkForLogoutError() {
+        // Check if there's a token but it's invalid
+        const token = localStorage.getItem('accessToken');
+        if (token && (window.location.href.includes('401') || window.location.href.includes('unauthorized'))) {
+            // Clear tokens
+            localStorage.clear();
+            const errorMessageEl = document.getElementById('errorMessage');
+            if (errorMessageEl) {
+                errorMessageEl.innerHTML = 'Your session has expired. Please log in again to continue.';
+            }
+        }
+    }
+
+    // Add error details if available
+    function addErrorDetails() {
+        const errorDetails = document.getElementById('errorDetails');
+        if (!errorDetails) return;
+
+        // Check if there's a specific error message in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const path = urlParams.get('path');
+
+        if (error || path) {
+            let detailsHtml = '<p><strong>Error Details:</strong></p>';
+            if (path) {
+                detailsHtml += `<p>Requested Path: <code>${escapeHtml(path)}</code></p>`;
+            }
+            if (error) {
+                detailsHtml += `<p>Error: ${escapeHtml(error)}</p>`;
+            }
+            errorDetails.innerHTML = detailsHtml;
+            errorDetails.style.display = 'block';
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Check if user is logged in and redirect appropriately for 401
+    function handleAuthError() {
+        const statusCode = document.getElementById('statusCode')?.textContent;
+        if (statusCode === '401' || statusCode === '403') {
+            // Clear any stale tokens
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userName');
+        }
+    }
+
+    // Initialize page
+    function init() {
+        createParticles();
+        getErrorInfo();
+        checkForLogoutError();
+        addErrorDetails();
+        handleAuthError();
+
+        // Add event listener for home button to clear any error state
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', function(e) {
+                // Clear any error flags
+                sessionStorage.removeItem('lastError');
+            });
+        }
+    }
+
+    // Run initialization when DOM is ready
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Also handle if the page loads via server-side rendering
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 </script>
 
 </body>
